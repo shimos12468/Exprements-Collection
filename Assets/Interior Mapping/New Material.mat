@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: New Material
-  m_Shader: {fileID: -6465566751694194690, guid: 7b8d0b8759fb5274e93d12a4e38c72f6,
+  m_Shader: {fileID: -6465566751694194690, guid: 53eeb85aff86a0a4e94a418645634003,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -32,6 +32,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Cubemap:
+        m_Texture: {fileID: 8900000, guid: 204172610ddc72c4db8a498410d3baf6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _CubemapAsset_3deb10e8b84d427c8ac6a475c2af9b35_Out_0_Cubemap:
         m_Texture: {fileID: 8900000, guid: b7918223c4da53e4788b66712ddf259d, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -50,6 +54,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Exterior_map:
+        m_Texture: {fileID: 2800000, guid: a056a515685d569488c1d6b45d935112, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
