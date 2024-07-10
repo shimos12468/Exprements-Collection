@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Base_Map:
-        m_Texture: {fileID: 2800000, guid: c0fda742457500f4ea83bb57cdaef361, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8b4c4e06d5b1e4f41960a4eaab6af3a4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Displacement:
-        m_Texture: {fileID: 2800000, guid: c7d84c44df96f7a46ba1b46d444ea81c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 72e5adc34c849bf4cb55978bc8b92bfc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -106,7 +106,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _normal:
-        m_Texture: {fileID: 2800000, guid: 563148a04c9208e438244585b8630a02, type: 3}
+        m_Texture: {fileID: 2800000, guid: 838cb636636af174f8a41f97ec002cca, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _roughness:
@@ -158,8 +158,8 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _amplitude: 3
-    - _steps: 128
+    - _amplitude: 2.5
+    - _steps: 5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
