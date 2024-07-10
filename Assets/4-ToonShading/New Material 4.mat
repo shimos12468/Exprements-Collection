@@ -110,6 +110,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
+    - _EdgeFloor: 0.2
     - _Edge_base: 0.2
     - _Edge_length: 0.5
     - _EnvironmentReflections: 1
@@ -127,9 +128,12 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _StrengthFloor: 1
+    - _StrengthLength: 0
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
+    - _strength: 16
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
