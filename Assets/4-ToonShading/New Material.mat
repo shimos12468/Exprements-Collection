@@ -104,7 +104,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Grediant_number: 0
+    - _Grediant_number: 0.338
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -113,10 +113,10 @@ Material:
     - _ReceiveShadows: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SpecBrightness: 1.86
-    - _SpecBrightness_1: 0.88
-    - _SpecFocus: 9.9
-    - _SpecFocus_1: 0.23
+    - _SpecBrightness: 3.62
+    - _SpecBrightness_1: 3.53
+    - _SpecFocus: 4.89
+    - _SpecFocus_1: 1.38
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
