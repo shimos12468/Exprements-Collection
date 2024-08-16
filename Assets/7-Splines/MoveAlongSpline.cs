@@ -22,7 +22,7 @@ public class MoveAlongSpline : MonoBehaviour
     void Start()
     {
         PopulatePlates();
-        //InitializePlates();
+        
 
     }
 
@@ -34,13 +34,7 @@ public class MoveAlongSpline : MonoBehaviour
         for(int i = 0; i < woodenPlates.Count; i++)
         {
 
-
-            
-
-            /*distancePercentages[i] += speed * Time.deltaTime / splineLength[i];
-
-
-
+            distancePercentages[i] += speed * Time.deltaTime / splineLength[i];
 
             Vector3 currentPosition = splinesContainer.EvaluatePosition(splineIndex[i], distancePercentages[i]);
 
@@ -48,10 +42,10 @@ public class MoveAlongSpline : MonoBehaviour
 
             if (Vector3.Distance(woodenPlates[i].transform.position, splinesContainer.Splines[1].Knots.ToArray()[0].Position) <= 0.01f && splineIndex[i] == 0)
             {
-                print("hey ? ");
-                splineIndex[i] = 1;
-                splineLength[i] = splinesContainer.CalculateLength(splineIndex[i]);
-                distancePercentages[i] = 0;
+                //print("hey ? ");
+                //splineIndex[i] = 1;
+                //splineLength[i] = splinesContainer.CalculateLength(splineIndex[i]);
+                //distancePercentages[i] = 0;
 
             }
             else if (distancePercentages[i] > 1f)
@@ -86,7 +80,7 @@ public class MoveAlongSpline : MonoBehaviour
                 Vector3 direction = nextPosition - currentPosition;
                 woodenPlates[i].transform.rotation = Quaternion.LookRotation(direction, transform.up);
 
-            }*/
+            }
 
         }
 
@@ -100,6 +94,7 @@ public class MoveAlongSpline : MonoBehaviour
     float radius = 0.5f;
     float mm = Mathf.Infinity;
     int ind;
+    float dist = 0;
     public void PopulatePlates()
     {
         for(int i = 0; i < numberOfObjects; i++)
@@ -109,24 +104,29 @@ public class MoveAlongSpline : MonoBehaviour
 
             GameObject go = Instantiate(prefab,pos,Quaternion.identity);
 
-
-
             for(int j = 0;j< splinesContainer.Splines[0].Knots.ToArray().Length; j++)
             {
                 float min= Vector3.Distance(go.transform.position, splinesContainer.Splines[0].Knots.ToArray()[j].Position);
                 if (min <= mm)
                 {
+                   
                     mm = min;   
                     ind = j;
+
+
                 }
             
             
             }
-            print(ind);
+            for(int k = 0;k< ind; k++)
+            {
+                dist += Vector3.Distance(splinesContainer.Splines[0].Knots.ToArray()[k].Position, splinesContainer.Splines[0].Knots.ToArray()[k + 1].Position);
+            }
+            distancePercentages.Add( dist / splinesContainer.CalculateLength(0));
             go.transform.position = splinesContainer.Splines[0].Knots.ToArray()[ind].Position;
             woodenPlates.Add(go);
             mm = Mathf.Infinity;
-
+            dist = 0;
         }
 
 
@@ -138,13 +138,7 @@ public class MoveAlongSpline : MonoBehaviour
     {
         splineLength.Capacity = woodenPlates.Count;
         splineIndex.Capacity = woodenPlates.Count;
-        distancePercentages.Capacity = woodenPlates.Count;
-
-        for (int i = 0; i < woodenPlates.Count; i++)
-        {
-            distancePercentages.Add(0);
-        }
-
+        //distancePercentages.Capacity = woodenPlates.Count;
 
         for (int i = 0; i < woodenPlates.Count; i++)
         {
