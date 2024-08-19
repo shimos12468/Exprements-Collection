@@ -17,11 +17,11 @@ public class MoveAlongSpline : MonoBehaviour
     public GameObject prefab;
 
     int index = 1;
-    
-    
+
+
     void Start()
     {
-        PopulatePlates();
+        //PopulatePlates();
         
 
     }
@@ -29,9 +29,16 @@ public class MoveAlongSpline : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         
-        for(int i = 0; i < woodenPlates.Count; i++)
+
+    }
+
+    public void MoveAlongeSplines(List<GameObject> woodenPlates , SplineContainer splinesContainer)
+    {
+
+        Initialize();
+
+        for (int i = 0; i < woodenPlates.Count; i++)
         {
 
             distancePercentages[i] += speed * Time.deltaTime / splineLength[i];
@@ -83,10 +90,7 @@ public class MoveAlongSpline : MonoBehaviour
             }
 
         }
-
-
     }
-
 
     public int initialAngle = 45;
 
@@ -130,11 +134,11 @@ public class MoveAlongSpline : MonoBehaviour
         }
 
 
-        InitializePlates();
+        Initialize();
     }
 
 
-    void InitializePlates()
+    void Initialize()
     {
         splineLength.Capacity = woodenPlates.Count;
         splineIndex.Capacity = woodenPlates.Count;
