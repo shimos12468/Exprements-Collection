@@ -123,6 +123,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &236086759 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7142633152201367872, guid: d515ac6a582036449a3cbd7ca606dc22,
+    type: 3}
+  m_PrefabInstance: {fileID: 8894627888421178930}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &236086761 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+    type: 3}
+  m_PrefabInstance: {fileID: 8894627888421178930}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236086759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e72606d0fba4f3c4e84d7ef9cc51370f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &236086763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236086759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e84d0241b6b0c44aa09705d19b0d8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  puzzle: {fileID: 236086761}
+  pointAIndex: 6
+  pointBIndex: 0
 --- !u!1 &1593892562
 GameObject:
   m_ObjectHideFlags: 0
@@ -160,7 +193,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -285,8 +318,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
+      propertyPath: Reset
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
       propertyPath: speed
-      value: 2.86
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: oneTurn
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
@@ -295,13 +338,73 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
+      propertyPath: splinePoints.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
       propertyPath: PointsOnSpline.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: pointsOfCircle.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
       propertyPath: splineLength.Array.data[0]
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[0].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[1].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[2].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[3].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[4].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[5].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[6].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[7].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[8].obj
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: splinePoints.Array.data[9].obj
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
@@ -352,6 +455,106 @@ PrefabInstance:
         type: 3}
       propertyPath: PointsOnSpline.Array.data[9].obj
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[2].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[3].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[4].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[5].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[6].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[7].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[8].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[9].closing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[0].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[1].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[2].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[3].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[4].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[5].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[6].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[7].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[8].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[9].numOfTurns
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[3].splineIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      propertyPath: PointsOnSpline.Array.data[4].splineIndex
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
@@ -600,6 +803,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
         type: 3}
+      propertyPath: PointsOnSpline.Array.data[0].distancePercentage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 483831061941073534, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
       propertyPath: PointsOnSpline.Array.data[1].distancePercentage
       value: 0
       objectReference: {fileID: 0}
@@ -771,7 +979,11 @@ PrefabInstance:
     - {fileID: 5466542527426408372, guid: d515ac6a582036449a3cbd7ca606dc22, type: 3}
     - {fileID: 75080128221367446, guid: d515ac6a582036449a3cbd7ca606dc22, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7142633152201367872, guid: d515ac6a582036449a3cbd7ca606dc22,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 236086763}
   m_SourcePrefab: {fileID: 100100000, guid: d515ac6a582036449a3cbd7ca606dc22, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

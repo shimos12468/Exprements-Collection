@@ -14,6 +14,11 @@ public class ProceduralAnimation : MonoBehaviour
     public SplineContainer spline;
     public float length = 0;
     public GameObject prefab;
+
+    float distancePercentage;
+    public float speed;
+    float splineLength;
+    public bool enable = false;
     void Start()
     {
         splineLength = spline.CalculateLength(0);
@@ -29,12 +34,7 @@ public class ProceduralAnimation : MonoBehaviour
         dis = dis.normalized;
         return (dis * distance) + anchor;
     }
-    float distancePercentage;
-    public float speed;
-    float splineLength;
-    float desiredDotProduct = 0.8f;
-    public bool enable = false;
-
+    
     void Update()
     {
         ApplyDistanceConstraintsOnPoints();

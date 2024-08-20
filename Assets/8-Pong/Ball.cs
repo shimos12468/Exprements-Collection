@@ -6,7 +6,7 @@ public class Ball : MonoBehaviour
 {
 
     [SerializeField, Min(0f)]
-    float maxStartXSpeed=2,maxSpeed = 20, startSpeed = 10 , constantYSpeed = 8,extents =0.5f;
+    float maxStartXSpeed=2,maxSpeed = 20, constantYSpeed = 8,extents =0.5f;
 
     [SerializeField]
     ParticleSystem bounceParticleSystem ,startParticleSystem ,trailParticleSystem;

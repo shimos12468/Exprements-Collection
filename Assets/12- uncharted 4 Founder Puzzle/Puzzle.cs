@@ -1,210 +1,299 @@
 ﻿using DG.Tweening;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class Puzzle : MonoBehaviour
+
+namespace EXP.U4FOUNDERSPUZZLE
 {
-    public float V = 0.002f;
-    public SplineContainer container;
-    public List<Vector2>pointsOfCircle = new List<Vector2>();
- 
-   
-    
-    
-    public int numPoints = 6;
-    public float radius = 0.5f;
-    public bool isCircle = false;
-
-    private void OnDrawGizmos()
+    public class Puzzle : MonoBehaviour
     {
-        Gizmos.color = Color.red; 
-        for (int i = 0; i < pointsOfCircle.Count; i++)
-        {
-            Gizmos.DrawSphere(new Vector3(pointsOfCircle[i].x,0, pointsOfCircle[i].y) * transform.localScale.x, transform.localScale.x);
-        }
-    }
+        public SplineContainer container;
 
-    
-    private void DisplayObjects()
-    {
-       
-        if (PointsOnSpline.Count== 0)
+        
+        public List<GraphicalMovingPoint> splinePoints = new List<GraphicalMovingPoint>();
+        public List<float> targetDistance = new List<float>();
+
+        public List<GraphicalMovingPoint> SplinePoints
         {
-            for (int i = 0; i < pointsOfCircle.Count; i++)
+            get
             {
-                GameObject g = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                g.transform.position = new Vector3(pointsOfCircle[i].x, 0, pointsOfCircle[i].y) * transform.localScale.x;
-                g.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-                g.transform.localScale = g.transform.localScale * transform.localScale.x;
-                PointsOnSpline.Add(new Intstance());
-                //assign initial game object
-                PointsOnSpline[i].obj = g;
+                return splinePoints;
+            }
+            set
+            {
+                splinePoints = value;
             }
         }
-       
-    }
-
-    private void InitializeGameObjects()
-    {
-
-        float mm = Mathf.Infinity;
-
-        float dist = 0;
-        for (int i = 0; i < pointsOfCircle.Count; i++)
+    
+        public List<float> TargetDistance
         {
-            int ind = -1;
-            for (int j = 0; j < container.Splines[0].Knots.ToArray().Length; j++)
+            get
             {
-                float min = Vector3.Distance(PointsOnSpline[i].obj.transform.position, container.Splines[0].Knots.ToArray()[j].Position);
-                if (min <= mm)
+                return targetDistance;
+            }
+            set
+            {
+                targetDistance = value;
+            }
+        }
+        
+        private List<Vector2> calculatedCirclePoints = new List<Vector2>();
+        private List<GraphicalMovingPoint> points;
+
+        
+
+
+        public float speed = 1f;
+
+        public int numPoints = 6;
+        public float radius = 0.5f;
+        public bool isCircle = false;
+
+
+        public bool GetMove()
+        {
+            return moving;
+        }
+
+        public void SetMove(bool value)
+        {
+            moving = value;
+        }
+        private bool moving = false;
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            for (int i = 0; i < calculatedCirclePoints.Count; i++)
+            {
+                Gizmos.DrawSphere(new Vector3(calculatedCirclePoints[i].x, 0, calculatedCirclePoints[i].y) * transform.localScale.x, transform.localScale.x);
+            }
+
+        }
+        
+        public void SetupGame()
+        {
+            splinePoints.Clear();
+
+
+            CalculateCirclePoints(numPoints, radius);
+            InitializePoints();
+            SetupPoints();
+        }
+
+        private void CalculateCirclePoints(int numPoints, float radius)
+        {
+            if (calculatedCirclePoints.Count == 0)
+            {
+                radius *= transform.localScale.x;
+                float angleStep = isCircle ? 2 * Mathf.PI / (numPoints) : Mathf.PI / (numPoints);
+                print(angleStep);
+                for (int i = 0; i < numPoints; i++)
                 {
+                    float angle = angleStep * i;
+                    float x = radius * Mathf.Cos(angle);
+                    float y = radius * Mathf.Sin(angle);
+                    calculatedCirclePoints.Add(new Vector2(x, y));
+                }
+            }
 
-                    mm = min;
-                    ind = j;
+        }
 
+        private void InitializePoints()
+        {
 
+            if (splinePoints.Count == 0)
+            {
+                for (int i = 0; i < calculatedCirclePoints.Count; i++)
+                {
+                    GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    g.transform.position = new Vector3(calculatedCirclePoints[i].x, 0, calculatedCirclePoints[i].y) * transform.localScale.x;
+                    g.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+                    g.transform.localScale = g.transform.localScale * transform.localScale.x;
+                    splinePoints.Add(new GraphicalMovingPoint());
+
+                    //assign initial game object
+                    splinePoints[i].obj = g;
                 }
 
-
             }
-            for (int k = 0; k < ind; k++)
-            {
-                dist += Vector3.Distance(container.Splines[0].Knots.ToArray()[k].Position, container.Splines[0].Knots.ToArray()[k + 1].Position);
-            }
-
-            // assign initial distance
-            PointsOnSpline[i].initialDistance = (float)Math.Round(dist / container.CalculateLength(0), 3) + V * i;
-            PointsOnSpline[i].distancePercentage = PointsOnSpline[i].initialDistance;
-
-            PointsOnSpline[i].numOfTurns = 0;
-            // assign the initial position
-            Vector3 currentPosition = container.EvaluatePosition(PointsOnSpline[i].splineIndex, PointsOnSpline[i].distancePercentage);
-            PointsOnSpline[i].obj.transform.position = currentPosition;
-
-            mm = Mathf.Infinity;
-            dist = 0;
 
         }
-    }
 
-    public void MakeCirclePoints(int numPoints ,float radius)
-    {
-        if (pointsOfCircle.Count == 0)
+        private void SetupPoints()
         {
-            radius *= transform.localScale.x;
-            float angleStep = isCircle ? 2 * Mathf.PI / (numPoints) : Mathf.PI / (numPoints);
-            print(angleStep);
-            for (int i = 0; i < numPoints; i++)
-            {
-                float angle = angleStep * i;
-                float x = radius * Mathf.Cos(angle);
-                float y = radius * Mathf.Sin(angle);
+            int num1 = 0, num0 = 0;
 
-                x = (float)Math.Round(x, 2);
-                y = (float)Math.Round(y, 2);
-                pointsOfCircle.Add(new Vector2(x, y));
+            for (int i = 0; i < calculatedCirclePoints.Count; i++)
+            {
+                if (splinePoints[i].splineIndex == 0)
+                {
+                    splinePoints[i].startDistancePercentage = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num0) / container.CalculateLength(splinePoints[i].splineIndex);
+                    num0++;
+                }
+                else
+                {
+                    splinePoints[i].startDistancePercentage = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num1) / container.CalculateLength(splinePoints[i].splineIndex);
+                    num1++;
+                }
+
+                targetDistance.Add(splinePoints[i].startDistancePercentage);
+                splinePoints[i].currentDistancePercentage = splinePoints[i].startDistancePercentage;
+                splinePoints[i].targetDistanceIndex = i;
+                splinePoints[i].numOfTurns = 0;
+                Vector3 currentPosition = container.EvaluatePosition(splinePoints[i].splineIndex, splinePoints[i].currentDistancePercentage);
+                splinePoints[i].obj.transform.position = currentPosition;
+                splinePoints[i].obj.transform.localScale = Vector3.one * transform.localScale.x;
+            }
+
+            for (int i = 0; i < splinePoints.Count; i++)
+            {
+                splinePoints[i].splineLength = container.CalculateLength(splinePoints[i].splineIndex);
+            }
+
+        }
+
+        public void CheckIfWillHaveFullTurn(List<GraphicalMovingPoint> points)
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (points[i].currentDistancePercentage >= targetDistance[points[i].targetDistanceIndex])
+                {
+                    points[i].normalized += 1;
+                }
+                else
+                {
+                    points[i].normalized += 0;
+                    print(i);
+
+                }
+                points[i].splineLength = container.CalculateLength(points[i].splineIndex);
             }
         }
-       
+
+        private void Update()
+        {
+            if (moving)
+            {
+                if (GetPointsList() == null)
+                {
+                    SetupPointsList();
+                }
+                Move();
+            }
+        }
+
+        private void Move()
+        {
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                bool arrivedToDistination = CheckArrivingToDesiredPoint(i);
+                if (arrivedToDistination)
+                {
+                    i--;
+                    continue;
+                }
+
+                if (!arrivedToDistination)
+                {
+                    Vector3 currentPosition = UpdatePosition(i);
+                    UpdateLookDirection(i, currentPosition);
+                    NormalizePoint(i);
+                }
+            }
+            CloseTurn();
+        }
+
+        private bool CheckArrivingToDesiredPoint(int i)
+        {
+            
+            if (points[i].currentDistancePercentage >= targetDistance[points[i].targetDistanceIndex] && points[i].normalized<=0)
+            {
+                points.RemoveAt(i);
+                return true;
+            }
+            return false;
+        }
+
+        private Vector3 UpdatePosition(int i)
+        {
+            points[i].currentDistancePercentage += speed * Time.deltaTime / points[i].splineLength;
+            float frac = points[i].currentDistancePercentage - Mathf.Floor(points[i].currentDistancePercentage);
+
+            Vector3 currentPosition = container.EvaluatePosition(points[i].splineIndex, frac);
+            points[i].obj.transform.position = currentPosition;
+            return currentPosition;
+        }
+
+        private void UpdateLookDirection(int i, Vector3 currentPosition)
+        {
+            Vector3 nextPosition = container.EvaluatePosition(points[i].splineIndex, points[i].currentDistancePercentage + 0.05f);
+            Vector3 direction = nextPosition - currentPosition;
+            points[i].obj.transform.rotation = Quaternion.LookRotation(direction, transform.up);
+        }
+
+        private void NormalizePoint(int i)
+        {
+
+            if (points[i].normalized>0)
+            {
+                if (points[i].currentDistancePercentage >= 1)
+                {
+                    points[i].currentDistancePercentage = points[i].currentDistancePercentage - 1;
+                    points[i].normalized--;
+                }
+            }
+
+        }
+
+        public void CloseTurn()
+        {
+            if (points.Count == 0)
+            {
+
+                for (int j = 0; j < splinePoints.Count; j++)
+                {
+                    splinePoints[j].numOfTurns++;
+                    splinePoints[j].currentDistancePercentage = splinePoints[j].startDistancePercentage;
+                    points = null;
+                }
+                moving = false;
+            }
+        }
+        public List<GraphicalMovingPoint> GetPointsList()
+        {
+            return points;
+        }
+        public void SetupPointsList()
+        {
+            points = new List<GraphicalMovingPoint>(splinePoints);
+        }
+
+
+        public List<Vector2> GetCalculatedCirclePointsList()
+        {
+            return calculatedCirclePoints;
+        }
     }
-
-
-    public List<Intstance> PointsOnSpline;
-    public float speed = 1f;
 
     [Serializable]
-    public class Intstance
+    public class GraphicalMovingPoint
     {
         public GameObject obj;
         public float splineLength = 0;
         public int splineIndex = 0;
-        public float distancePercentage =0;
-        public float initialDistance = 0;
+        public float currentDistancePercentage = 0;
+        public float startDistancePercentage = 0;
+        public int targetDistanceIndex;
         public int numOfTurns = 0;
-        public bool closing = false;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        MakeCirclePoints(numPoints, radius);
-        DisplayObjects();
-        InitializeGameObjects();
-        Initialize();
+        public int normalized = 0;
     }
 
-    public bool oneTurn = false;
-    // Update is called once per frame
-    void Update()
-    {
-
-        if(oneTurn)
-            MoveForATurn();
-
-
-
-    }
-    public int number = 0;
-   
-
-    private void MoveForATurn()
-    {
-        for (int i = 0; i < PointsOnSpline.Count; i++)
-        {
-            if (PointsOnSpline[i].distancePercentage >= PointsOnSpline[i].initialDistance && PointsOnSpline[i].closing == true)
-            {
-                number++;
-                PointsOnSpline[i].closing = false;
-                if (number == numPoints)
-                {
-                    
-                    for(int j = 0; j < PointsOnSpline.Count; j++)
-                    {
-                        PointsOnSpline[j].numOfTurns++;
-                        PointsOnSpline[j].distancePercentage = PointsOnSpline[j].initialDistance;
-                    }
-                    number = 0;
-                    oneTurn = false;
-                    break;
-                }
-                continue;
-            }
-
-            PointsOnSpline[i].distancePercentage += speed * Time.deltaTime / PointsOnSpline[i].splineLength;
-
-
-            Vector3 currentPosition = container.EvaluatePosition(PointsOnSpline[i].splineIndex, PointsOnSpline[i].distancePercentage);
-            PointsOnSpline[i].obj.transform.position = currentPosition;
-
-
-            Vector3 nextPosition = container.EvaluatePosition(PointsOnSpline[i].splineIndex, PointsOnSpline[i].distancePercentage + 0.05f);
-            Vector3 direction = nextPosition - currentPosition;
-            PointsOnSpline[i].obj.transform.rotation = Quaternion.LookRotation(direction, transform.up);
-
-            if (PointsOnSpline[i].distancePercentage >= 1f)
-            {
-                PointsOnSpline[i].distancePercentage = PointsOnSpline[i].distancePercentage-1;
-                PointsOnSpline[i].closing = true;
-            }
-        }
-    }
-
-    void Initialize()
-    {
-          
-       
-        for (int i = 0; i < PointsOnSpline.Count; i++)
-        {
-            PointsOnSpline[i].splineIndex=0;
-        }
-
-        for (int i = 0; i < PointsOnSpline.Count; i++)
-        {
-            PointsOnSpline[i].splineLength = container.CalculateLength(PointsOnSpline[i].splineIndex);
-        }
-    }
 }
+
+
