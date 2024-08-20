@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   puzzle: {fileID: 236086761}
   pointAIndex: 6
-  pointBIndex: 0
+  pointBIndex: 7
 --- !u!1 &1593892562
 GameObject:
   m_ObjectHideFlags: 0
