@@ -10,13 +10,15 @@ namespace EXP.U4FOUNDERSPUZZLE
     public class Controller : MonoBehaviour
     {
         [SerializeField] Puzzle puzzle;
-        bool onetime = false;
         bool initialized = false;
 
         public int pointAIndex, pointBIndex;
        
+        public List<GraphicalMovingPoint>selectedPoints = new List<GraphicalMovingPoint>();
 
-        
+        public int shiftStart;
+        public int shiftCount;
+
         void Update()
         {
             if (Input.GetMouseButtonDown(0))
@@ -25,72 +27,132 @@ namespace EXP.U4FOUNDERSPUZZLE
                 if (!initialized)
                 {
                     initialized = true;
-                    onetime = true;
                 }
             }
 
-            if (initialized && onetime)
+            if (initialized)
             {
-                puzzle.SetupGame();
-                onetime = false;
-                FirstTurn();
+               puzzle.SetupGame();
+                selectedPoints.Clear();
+               
+               initialized = false;
+                
             }
 
             if (Input.GetMouseButtonDown(1))
             {
+                Turn();
                 puzzle.SetMove(true);
             }
         }
 
-        private void FirstTurn()
+        private void Turn()
         {
-
-
             int targetSplineIndex = 1;
+
             Vector3 initialPoint = puzzle.container.Splines[targetSplineIndex].Knots.ToArray()[0].Position;
+
             float splineLength = puzzle.container.CalculateLength(targetSplineIndex);
+
             Spline spline = puzzle.container.Splines[targetSplineIndex];
-            for (int i = 1; i <= 3; i++)
+
+            List<float> values = new List<float>(puzzle.TargetDistance);
+
+            float d = CalculateTargetDistance();
+
+            float curveLength = spline.GetCurveLength(pointBIndex);
+
+            float pointpos = curveLength / 4;
+
+            float start = pointpos;
+
+
+            if (selectedPoints.Count > 0)
             {
-                int correctIndex = i + 1; 
+                
+                for (int i = 0; i < selectedPoints.Count; i++)
+                {
+                    int index= puzzle.splinePoints.FindIndex(x => x == selectedPoints[i]);
+
+                    puzzle.splinePoints[index].switching = true;
+                    puzzle.splinePoints[index].splineIndex = 1;
+                    puzzle.targetDistance[puzzle.splinePoints[index].distanceIndex] = i*0.1f+0.4f;
+
+                }
+                puzzle.targetDistance[2] = 0.2f;
+                puzzle.targetDistance[puzzle.splinePoints[8].distanceIndex] = 0.3f;
+                puzzle.targetDistance[puzzle.splinePoints[9].distanceIndex] = 0.4f;
+                selectedPoints.Clear();
+            }
+
+
+            ShiftPoints(values, shiftStart,shiftCount);
+            
+            SwitchToSpline(targetSplineIndex, initialPoint, splineLength, spline, d, start);
+
+            for (int i = 0; i < puzzle.targetDistance.Count - 3; i++)
+            {
+                int correctIndex = i + 5;
+                int index = correctIndex % puzzle.targetDistance.Count;
+                int valueIndex = (correctIndex + 5) % puzzle.targetDistance.Count;
+
+                GraphicalMovingPoint point = puzzle.splinePoints[index];
+
+                puzzle.splinePoints[index] = puzzle.splinePoints[valueIndex];
+
+                puzzle.splinePoints[valueIndex] = point;
+
+            }
+
+            puzzle.CheckIfWillHaveFullTurn(puzzle.SplinePoints);
+
+        }
+
+        private void SwitchToSpline(int targetSplineIndex, Vector3 initialPoint, float splineLength, Spline spline, float d, float start)
+        {
+            for (int i = shiftStart; i < shiftStart+shiftCount; i++)
+            {
+                int correctIndex = i;
                 Vector3 currentPointPosition = puzzle.SplinePoints[correctIndex].obj.transform.position;
 
                 float dist = GetDistance(currentPointPosition, initialPoint);
 
                 GraphicalMovingPoint point = puzzle.SplinePoints[correctIndex];
 
-                point.startDistancePercentage = dist / splineLength;
-                point.currentDistancePercentage = point.startDistancePercentage;
+                point.startDistance = dist / splineLength;
+                point.currentDistance = point.startDistance;
                 point.splineIndex = targetSplineIndex;
                 point.splineLength = splineLength;
 
-                float d = CalculateTargetDistance();
-                float curveLength = spline.GetCurveLength(pointBIndex);
+                float pos = (d) + (start * (i - 1));
 
-                float pointpos = curveLength / 5;
-                float start = pointpos + 1;
-                float pos = (d + (start * i));
+                puzzle.TargetDistance[point.distanceIndex] = pos / spline.GetLength();
 
+                selectedPoints.Add(point);
 
-                puzzle.TargetDistance[puzzle.TargetDistance.Count - i] = puzzle.TargetDistance[point.targetDistanceIndex];
-                puzzle.SplinePoints[puzzle.TargetDistance.Count - i].normalized += 1;
-                puzzle.TargetDistance[point.targetDistanceIndex] = pos/spline.GetLength();
             }
-
-
-            
-            
-            puzzle.CheckIfWillHaveFullTurn(puzzle.SplinePoints);
-
         }
 
-       
+        private void ShiftPoints(List<float> values , int count ,int start)
+        {
+
+            for (int i = start+count; i < puzzle.targetDistance.Count+count; i++)
+            {
+
+                print(i % puzzle.targetDistance.Count);
+                
+                int index = i % puzzle.targetDistance.Count;
+                int valueIndex = (i + 5) % puzzle.targetDistance.Count;
+                puzzle.TargetDistance[index] = values[valueIndex];
+            }
+        }
+
 
         private float CalculateTargetDistance()
         {
             Spline spline = puzzle.container.Splines[1];
             float totalDistance = 0;
-            for(int i = 0; i < pointAIndex; i++)
+            for(int i = 0; i <= pointAIndex; i++)
             {
                 totalDistance+=spline.GetCurveLength(i);
             }

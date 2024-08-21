@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -14,9 +15,11 @@ namespace EXP.U4FOUNDERSPUZZLE
     {
         public SplineContainer container;
 
-        
         public List<GraphicalMovingPoint> splinePoints = new List<GraphicalMovingPoint>();
         public List<float> targetDistance = new List<float>();
+        public List<float> distanceplaces= new List<float>();
+
+
 
         public List<GraphicalMovingPoint> SplinePoints
         {
@@ -78,7 +81,9 @@ namespace EXP.U4FOUNDERSPUZZLE
         public void SetupGame()
         {
             splinePoints.Clear();
-
+            targetDistance.Clear();
+            distanceplaces.Clear();
+            points = null; 
 
             CalculateCirclePoints(numPoints, radius);
             InitializePoints();
@@ -91,7 +96,7 @@ namespace EXP.U4FOUNDERSPUZZLE
             {
                 radius *= transform.localScale.x;
                 float angleStep = isCircle ? 2 * Mathf.PI / (numPoints) : Mathf.PI / (numPoints);
-                print(angleStep);
+   
                 for (int i = 0; i < numPoints; i++)
                 {
                     float angle = angleStep * i;
@@ -132,20 +137,20 @@ namespace EXP.U4FOUNDERSPUZZLE
             {
                 if (splinePoints[i].splineIndex == 0)
                 {
-                    splinePoints[i].startDistancePercentage = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num0) / container.CalculateLength(splinePoints[i].splineIndex);
+                    splinePoints[i].startDistance = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num0) / container.CalculateLength(splinePoints[i].splineIndex);
                     num0++;
                 }
                 else
                 {
-                    splinePoints[i].startDistancePercentage = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num1) / container.CalculateLength(splinePoints[i].splineIndex);
+                    splinePoints[i].startDistance = ((container.CalculateLength(splinePoints[i].splineIndex) / calculatedCirclePoints.Count) * num1) / container.CalculateLength(splinePoints[i].splineIndex);
                     num1++;
                 }
 
-                targetDistance.Add(splinePoints[i].startDistancePercentage);
-                splinePoints[i].currentDistancePercentage = splinePoints[i].startDistancePercentage;
-                splinePoints[i].targetDistanceIndex = i;
-                splinePoints[i].numOfTurns = 0;
-                Vector3 currentPosition = container.EvaluatePosition(splinePoints[i].splineIndex, splinePoints[i].currentDistancePercentage);
+                targetDistance.Add(splinePoints[i].startDistance);
+                distanceplaces.Add(splinePoints[i].startDistance);
+                splinePoints[i].currentDistance = splinePoints[i].startDistance;
+                splinePoints[i].distanceIndex = i;
+                Vector3 currentPosition = container.EvaluatePosition(splinePoints[i].splineIndex, splinePoints[i].currentDistance);
                 splinePoints[i].obj.transform.position = currentPosition;
                 splinePoints[i].obj.transform.localScale = Vector3.one * transform.localScale.x;
             }
@@ -161,14 +166,13 @@ namespace EXP.U4FOUNDERSPUZZLE
         {
             for (int i = 0; i < points.Count; i++)
             {
-                if (points[i].currentDistancePercentage >= targetDistance[points[i].targetDistanceIndex])
+                if (points[i].currentDistance >= targetDistance[points[i].distanceIndex])
                 {
-                    points[i].normalized += 1;
+                    points[i].turns += 1;
                 }
                 else
                 {
-                    points[i].normalized += 0;
-                    print(i);
+                    points[i].turns += 0;
 
                 }
                 points[i].splineLength = container.CalculateLength(points[i].splineIndex);
@@ -211,8 +215,33 @@ namespace EXP.U4FOUNDERSPUZZLE
 
         private bool CheckArrivingToDesiredPoint(int i)
         {
+
             
-            if (points[i].currentDistancePercentage >= targetDistance[points[i].targetDistanceIndex] && points[i].normalized<=0)
+            if (points[i].switching)
+            {
+                if (Vector3.Distance(points[i].obj.transform.position, container.Splines[0].Knots.ToArray()[1].Position) <=0.4f)
+                {
+                    points[i].switching = false;
+                    points[i].splineLength = container.CalculateLength(0);
+                    points[i].splineIndex = 0;
+                    points[i].currentDistance = 0.1f;
+
+
+                    if (points[i].currentDistance >= targetDistance[points[i].distanceIndex])
+                    {
+                        points[i].turns = 1;
+                    }
+                    else
+                    {
+                        points[i].turns = 0;
+
+                    }
+
+                }
+            }
+
+            
+            if (points[i].currentDistance >= targetDistance[points[i].distanceIndex] && points[i].turns<=0)
             {
                 points.RemoveAt(i);
                 return true;
@@ -222,8 +251,8 @@ namespace EXP.U4FOUNDERSPUZZLE
 
         private Vector3 UpdatePosition(int i)
         {
-            points[i].currentDistancePercentage += speed * Time.deltaTime / points[i].splineLength;
-            float frac = points[i].currentDistancePercentage - Mathf.Floor(points[i].currentDistancePercentage);
+            points[i].currentDistance += speed * Time.deltaTime / points[i].splineLength;
+            float frac = points[i].currentDistance - Mathf.Floor(points[i].currentDistance);
 
             Vector3 currentPosition = container.EvaluatePosition(points[i].splineIndex, frac);
             points[i].obj.transform.position = currentPosition;
@@ -232,7 +261,7 @@ namespace EXP.U4FOUNDERSPUZZLE
 
         private void UpdateLookDirection(int i, Vector3 currentPosition)
         {
-            Vector3 nextPosition = container.EvaluatePosition(points[i].splineIndex, points[i].currentDistancePercentage + 0.05f);
+            Vector3 nextPosition = container.EvaluatePosition(points[i].splineIndex, points[i].currentDistance + 0.05f);
             Vector3 direction = nextPosition - currentPosition;
             points[i].obj.transform.rotation = Quaternion.LookRotation(direction, transform.up);
         }
@@ -240,12 +269,12 @@ namespace EXP.U4FOUNDERSPUZZLE
         private void NormalizePoint(int i)
         {
 
-            if (points[i].normalized>0)
+            if (points[i].turns>0)
             {
-                if (points[i].currentDistancePercentage >= 1)
+                if (points[i].currentDistance >= 1)
                 {
-                    points[i].currentDistancePercentage = points[i].currentDistancePercentage - 1;
-                    points[i].normalized--;
+                    points[i].currentDistance = points[i].currentDistance - 1;
+                    points[i].turns--;
                 }
             }
 
@@ -258,10 +287,18 @@ namespace EXP.U4FOUNDERSPUZZLE
 
                 for (int j = 0; j < splinePoints.Count; j++)
                 {
-                    splinePoints[j].numOfTurns++;
-                    splinePoints[j].currentDistancePercentage = splinePoints[j].startDistancePercentage;
-                    points = null;
+                    if (splinePoints[j].currentDistance >= targetDistance[splinePoints[j].distanceIndex])
+                    {
+                        //splinePoints[j].normalized += 1;
+                    }
+                    else
+                    {
+                        //splinePoints[j].normalized += 0;
+
+                    }
+                   
                 }
+                points = null;
                 moving = false;
             }
         }
@@ -285,13 +322,20 @@ namespace EXP.U4FOUNDERSPUZZLE
     public class GraphicalMovingPoint
     {
         public GameObject obj;
+        
         public float splineLength = 0;
+        
+        public float currentDistance = 0;
+        
+        public float startDistance = 0;
+        
         public int splineIndex = 0;
-        public float currentDistancePercentage = 0;
-        public float startDistancePercentage = 0;
-        public int targetDistanceIndex;
-        public int numOfTurns = 0;
-        public int normalized = 0;
+        
+        public int distanceIndex =0;
+        
+        public int turns = 0;
+        
+        public bool switching = false;
     }
 
 }
