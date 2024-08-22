@@ -1,10 +1,7 @@
-﻿using DG.Tweening;
-using JetBrains.Annotations;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -15,12 +12,10 @@ namespace EXP.U4FOUNDERSPUZZLE
     {
         public SplineContainer container;
 
+        public GameObject prefab;
+
         public List<GraphicalMovingPoint> splinePoints = new List<GraphicalMovingPoint>();
-        public List<float> targetDistance = new List<float>();
-        public List<float> distanceplaces= new List<float>();
-
-
-
+        private List<GraphicalMovingPoint> points;
         public List<GraphicalMovingPoint> SplinePoints
         {
             get
@@ -33,6 +28,7 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
         }
     
+        public List<float> targetDistance = new List<float>();
         public List<float> TargetDistance
         {
             get
@@ -45,10 +41,9 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
         }
         
-        private List<Vector2> calculatedCirclePoints = new List<Vector2>();
-        private List<GraphicalMovingPoint> points;
 
-        
+        public List<float> distanceplaces= new List<float>();
+        private List<Vector2> calculatedCirclePoints = new List<Vector2>();
 
 
         public float speed = 1f;
@@ -56,18 +51,10 @@ namespace EXP.U4FOUNDERSPUZZLE
         public int numPoints = 6;
         public float radius = 0.5f;
         public bool isCircle = false;
-
-
-        public bool GetMove()
-        {
-            return moving;
-        }
-
-        public void SetMove(bool value)
-        {
-            moving = value;
-        }
         private bool moving = false;
+
+       
+       
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
@@ -115,10 +102,11 @@ namespace EXP.U4FOUNDERSPUZZLE
             {
                 for (int i = 0; i < calculatedCirclePoints.Count; i++)
                 {
-                    GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    GameObject g = Instantiate(prefab);
                     g.transform.position = new Vector3(calculatedCirclePoints[i].x, 0, calculatedCirclePoints[i].y) * transform.localScale.x;
                     g.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
                     g.transform.localScale = g.transform.localScale * transform.localScale.x;
+                    g.GetComponentInChildren<TMP_Text>().SetText(i.ToString());
                     splinePoints.Add(new GraphicalMovingPoint());
 
                     //assign initial game object
@@ -302,20 +290,32 @@ namespace EXP.U4FOUNDERSPUZZLE
                 moving = false;
             }
         }
+        
         public List<GraphicalMovingPoint> GetPointsList()
         {
             return points;
         }
+        
         public void SetupPointsList()
         {
             points = new List<GraphicalMovingPoint>(splinePoints);
         }
 
-
         public List<Vector2> GetCalculatedCirclePointsList()
         {
             return calculatedCirclePoints;
         }
+
+        public bool GetMove()
+        {
+            return moving;
+        }
+
+        public void SetMove(bool value)
+        {
+            moving = value;
+        }
+
     }
 
     [Serializable]

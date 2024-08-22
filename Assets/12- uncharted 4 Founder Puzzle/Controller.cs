@@ -66,29 +66,11 @@ namespace EXP.U4FOUNDERSPUZZLE
 
             float start = pointpos;
 
+            RemoveFromSpline1();
 
-            if (selectedPoints.Count > 0)
-            {
-                
-                for (int i = 0; i < selectedPoints.Count; i++)
-                {
-                    int index= puzzle.splinePoints.FindIndex(x => x == selectedPoints[i]);
+            ShiftPoints(values, shiftStart, shiftCount);
 
-                    puzzle.splinePoints[index].switching = true;
-                    puzzle.splinePoints[index].splineIndex = 1;
-                    puzzle.targetDistance[puzzle.splinePoints[index].distanceIndex] = i*0.1f+0.4f;
-
-                }
-                puzzle.targetDistance[2] = 0.2f;
-                puzzle.targetDistance[puzzle.splinePoints[8].distanceIndex] = 0.3f;
-                puzzle.targetDistance[puzzle.splinePoints[9].distanceIndex] = 0.4f;
-                selectedPoints.Clear();
-            }
-
-
-            ShiftPoints(values, shiftStart,shiftCount);
-            
-            SwitchToSpline(targetSplineIndex, initialPoint, splineLength, spline, d, start);
+            EnterSpline1(targetSplineIndex, initialPoint, splineLength, spline, d, start);
 
             for (int i = 0; i < puzzle.targetDistance.Count - 3; i++)
             {
@@ -108,7 +90,28 @@ namespace EXP.U4FOUNDERSPUZZLE
 
         }
 
-        private void SwitchToSpline(int targetSplineIndex, Vector3 initialPoint, float splineLength, Spline spline, float d, float start)
+        private void RemoveFromSpline1()
+        {
+            if (selectedPoints.Count > 0)
+            {
+
+                for (int i = 0; i < selectedPoints.Count; i++)
+                {
+                    int index = puzzle.splinePoints.FindIndex(x => x == selectedPoints[i]);
+
+                    puzzle.splinePoints[index].switching = true;
+                    puzzle.splinePoints[index].splineIndex = 1;
+                    puzzle.targetDistance[puzzle.splinePoints[index].distanceIndex] = i * 0.1f + 0.4f;
+
+                }
+                puzzle.targetDistance[2] = 0.3f;
+                puzzle.targetDistance[puzzle.splinePoints[8].distanceIndex] = 0.4f;
+                puzzle.targetDistance[puzzle.splinePoints[9].distanceIndex] = 0.5f;
+                selectedPoints.Clear();
+            }
+        }
+
+        private void EnterSpline1(int targetSplineIndex, Vector3 initialPoint, float splineLength, Spline spline, float d, float start)
         {
             for (int i = shiftStart; i < shiftStart+shiftCount; i++)
             {
@@ -133,6 +136,9 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
         }
 
+
+        int value = 0;
+
         private void ShiftPoints(List<float> values , int count ,int start)
         {
 
@@ -143,8 +149,9 @@ namespace EXP.U4FOUNDERSPUZZLE
                 
                 int index = i % puzzle.targetDistance.Count;
                 int valueIndex = (i + 5) % puzzle.targetDistance.Count;
-                puzzle.TargetDistance[index] = values[valueIndex];
+                puzzle.TargetDistance[index] = values[valueIndex]+(value*0.1f);
             }
+            value += 1;
         }
 
 
