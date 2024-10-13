@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelGPUInstancing : MonoBehaviour
+public class Levl3 : MonoBehaviour
 {
 
     public Mesh mesh;
