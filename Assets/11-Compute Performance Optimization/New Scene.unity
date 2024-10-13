@@ -1046,8 +1046,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 969206906}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -83.8}
+  m_LocalRotation: {x: 0.14933817, y: 0.07291483, z: -0.011010284, w: 0.9860326}
+  m_LocalPosition: {x: 55.172916, y: 64.35358, z: -112.22801}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1172,6 +1172,94 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1011948666}
   m_CullTransparentMesh: 1
+--- !u!1001 &1178794563
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8912300242611790799, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_BackGroundColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8912300242611790799, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8912300242611790799, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8912300242611790799, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22.730774
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -23.150421
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bbbf7b03bf3f016408aabb0d5b42e48a,
+        type: 3}
+      propertyPath: m_Name
+      value: Window_Wodden
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bbbf7b03bf3f016408aabb0d5b42e48a, type: 3}
 --- !u!1 &1181876983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,9 +1778,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 85475658}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 11
+  m_MaxValue: 9
   m_WholeNumbers: 0
-  m_Value: 11
+  m_Value: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2523,3 +2611,4 @@ SceneRoots:
   - {fileID: 770387090}
   - {fileID: 1714124379}
   - {fileID: 577368826}
+  - {fileID: 1178794563}
