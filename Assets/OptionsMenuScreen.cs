@@ -1,6 +1,4 @@
 using DG.Tweening;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +8,7 @@ public class OptionsMenuScreen : MonoBehaviour
     public Transform optionsContainer;
     public Transform obj;
 
-    public List<Mesh>filters= new List<Mesh>();
+    public List<Mesh> filters = new List<Mesh>();
 
 
     void Start()
@@ -49,11 +47,11 @@ public class OptionsMenuScreen : MonoBehaviour
     public int index = 0;
     private void Completed()
     {
-        if(index>=filters.Count)index= 0;
+        if (index >= filters.Count) index = 0;
         print("FSDAFSADF");
         obj.GetComponent<MeshFilter>().sharedMesh = filters[index];
 
-        
+
 
     }
 }

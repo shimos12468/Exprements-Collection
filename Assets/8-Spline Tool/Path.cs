@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class Path
 {
-    [SerializeField,HideInInspector]
+    [SerializeField, HideInInspector]
     public List<Vector2> points;
 
     [SerializeField, HideInInspector]
@@ -31,7 +30,7 @@ public class Path
         {
             return isClosed;
         }
-        set 
+        set
         {
             if (isClosed != value)
             {
@@ -56,10 +55,11 @@ public class Path
                     }
                 }
             }
-        
+
         }
     }
-    public Vector2 this[int i]{
+    public Vector2 this[int i]
+    {
         get
         {
             return points[i];
@@ -96,22 +96,22 @@ public class Path
     {
         get
         {
-            return points.Count/3;
+            return points.Count / 3;
         }
     }
 
     public void AddSegment(Vector2 anchor)
     {
-        points.Add(points[points.Count - 1] * 2 - points[points.Count-2]);
-        points.Add((points[points.Count-1] + anchor)*0.5f);
+        points.Add(points[points.Count - 1] * 2 - points[points.Count - 2]);
+        points.Add((points[points.Count - 1] + anchor) * 0.5f);
         points.Add(anchor);
         if (autoSetControlPoints)
         {
-         AutoSetAffectedControlPoints(points.Count-1);
+            AutoSetAffectedControlPoints(points.Count - 1);
         }
     }
 
-    public void SplitSegment(Vector2 anchorPosition,int segmentIndex)
+    public void SplitSegment(Vector2 anchorPosition, int segmentIndex)
     {
         points.InsertRange(segmentIndex * 3 + 2, new Vector2[] { Vector2.zero, anchorPosition, Vector2.zero });
         if (autoSetControlPoints)
@@ -152,10 +152,10 @@ public class Path
 
     public Vector2[] GetPointsInSegment(int index)
     {
-        return new Vector2[]{ points[index*3], points[index * 3+1], points[index * 3+2], points[LoopIndex(index * 3 + 3)]};
+        return new Vector2[] { points[index * 3], points[index * 3 + 1], points[index * 3 + 2], points[LoopIndex(index * 3 + 3)] };
     }
 
-    public void MovePoint(int i ,Vector2 pos)
+    public void MovePoint(int i, Vector2 pos)
     {
         Vector2 deltaMove = pos - points[i];
 
@@ -199,30 +199,30 @@ public class Path
 
     }
 
-    public Vector2[] CalculateEvenlySpacedPoints(float spacing,float resolution = 1)
+    public Vector2[] CalculateEvenlySpacedPoints(float spacing, float resolution = 1)
     {
-        List<Vector2>evenlySpacedPoints = new List<Vector2>();
+        List<Vector2> evenlySpacedPoints = new List<Vector2>();
         evenlySpacedPoints.Add(points[0]);
         Vector2 previousPoint = points[0];
         float distanceSinceLastEvenPoint = 0;
-        for(int i = 0; i < NumOfSegments; i++)
+        for (int i = 0; i < NumOfSegments; i++)
         {
             Vector2[] points = GetPointsInSegment(i);
 
             float controlNetLength = Vector2.Distance(points[0], points[1]) + Vector2.Distance(points[1], points[2]) + Vector2.Distance(points[2], points[3]);
-            float estimatedCurveLength = Vector2.Distance(points[0], points[3]) + controlNetLength *.5f;
+            float estimatedCurveLength = Vector2.Distance(points[0], points[3]) + controlNetLength * .5f;
             int divisions = Mathf.CeilToInt(estimatedCurveLength * resolution * 10);
             float t = 0;
-            while (t<=1)
+            while (t <= 1)
             {
                 t += 1f / divisions;
-                Vector2 pointOnCurve= Bezier.EvaluateCubic(points[0], points[1], points[2], points[3], t);
-                
+                Vector2 pointOnCurve = Bezier.EvaluateCubic(points[0], points[1], points[2], points[3], t);
+
                 distanceSinceLastEvenPoint += Vector2.Distance(previousPoint, pointOnCurve);
 
                 while (distanceSinceLastEvenPoint >= spacing)
                 {
-                    float overShoot = distanceSinceLastEvenPoint-spacing;
+                    float overShoot = distanceSinceLastEvenPoint - spacing;
                     Vector2 spacedPoint = pointOnCurve + (previousPoint - pointOnCurve).normalized * overShoot;
                     evenlySpacedPoints.Add(spacedPoint);
                     distanceSinceLastEvenPoint = overShoot;
@@ -235,10 +235,10 @@ public class Path
         }
         return evenlySpacedPoints.ToArray();
     }
-  
+
     public void AutoSetAffectedControlPoints(int anchorIndex)
     {
-        for (int i = anchorIndex - 3; i <= anchorIndex + 3; i+=3)
+        for (int i = anchorIndex - 3; i <= anchorIndex + 3; i += 3)
         {
             if (i >= 0 && i < points.Count || isClosed)
             {
@@ -251,7 +251,7 @@ public class Path
 
     public void AutoSetAllControlPoints()
     {
-        for (int i = 0; i < points.Count; i+=3)
+        for (int i = 0; i < points.Count; i += 3)
         {
             AutoSetAnchorControlPoints(i);
         }
@@ -295,7 +295,7 @@ public class Path
     {
         if (!isClosed)
         {
-            points[1] = (points[0] + points[2])*0.5f;
+            points[1] = (points[0] + points[2]) * 0.5f;
             points[points.Count - 2] = (points[points.Count - 1] + points[points.Count - 3]) * 0.5f;
         }
 
@@ -303,6 +303,6 @@ public class Path
 
     public int LoopIndex(int i)
     {
-        return (i+points.Count)%points.Count;
+        return (i + points.Count) % points.Count;
     }
 }

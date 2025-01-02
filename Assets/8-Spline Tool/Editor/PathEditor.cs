@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.TerrainTools;
 using UnityEngine;
 
 
@@ -33,7 +30,7 @@ public class PathEditor : Editor
         }
 
         bool isClosed = GUILayout.Toggle(Path.IsClosed, "Closed");
-        if (isClosed!=Path.IsClosed)
+        if (isClosed != Path.IsClosed)
         {
             Undo.RecordObject(creator, "Toggle Clossed");
             Path.IsClosed = isClosed;
@@ -67,30 +64,30 @@ public class PathEditor : Editor
     {
         Event guiEvent = Event.current;
         Vector2 mousePos = HandleUtility.GUIPointToWorldRay(guiEvent.mousePosition).origin;
-        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0&& guiEvent.shift)
+        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 0 && guiEvent.shift)
         {
             if (selectedSegmentIndex != -1)
             {
                 Undo.RecordObject(creator, "Split Segment");
-                Path.SplitSegment(mousePos,selectedSegmentIndex);
+                Path.SplitSegment(mousePos, selectedSegmentIndex);
             }
             else if (!Path.isClosed)
             {
                 Undo.RecordObject(creator, "Add Segment");
                 Path.AddSegment(mousePos);
             }
-            
+
         }
-        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 1&&guiEvent.shift)
+        if (guiEvent.type == EventType.MouseDown && guiEvent.button == 1 && guiEvent.shift)
         {
-            float minDistToAnchor = creator.anchorDiameter*.5f;
+            float minDistToAnchor = creator.anchorDiameter * .5f;
             int closestAnchorIndex = -1;
 
-            for(int i = 0; i < Path.NumOfPoints; i += 3)
+            for (int i = 0; i < Path.NumOfPoints; i += 3)
             {
                 float dist = Vector2.Distance(mousePos, Path[i]);
 
-                if (dist <minDistToAnchor)
+                if (dist < minDistToAnchor)
                 {
                     minDistToAnchor = dist;
                     closestAnchorIndex = i;
@@ -103,11 +100,11 @@ public class PathEditor : Editor
             }
         }
 
-        if(guiEvent.type == EventType.MouseMove)
+        if (guiEvent.type == EventType.MouseMove)
         {
             float minDist = segmentSelectDistanceThreshold;
             int newSelectedSegmentIndex = -1;
-            for(int i = 0; i < Path.NumOfSegments; i++)
+            for (int i = 0; i < Path.NumOfSegments; i++)
             {
                 Vector2[] points = Path.GetPointsInSegment(i);
                 float dist = HandleUtility.DistancePointBezier(mousePos, points[0], points[3], points[1], points[2]);
@@ -132,9 +129,9 @@ public class PathEditor : Editor
     void Draw()
     {
 
-        for(int i = 0; i < Path.NumOfSegments; i++)
+        for (int i = 0; i < Path.NumOfSegments; i++)
         {
-            Vector2[]points = Path.GetPointsInSegment(i);
+            Vector2[] points = Path.GetPointsInSegment(i);
 
             if (creator.displayControlPoints)
             {
@@ -142,11 +139,11 @@ public class PathEditor : Editor
                 Handles.DrawLine(points[1], points[0]);
                 Handles.DrawLine(points[2], points[3]);
             }
-            Handles.color = i==selectedSegmentIndex&&Event.current.shift? creator.selectedSegmentCol : creator.segmentCol;
+            Handles.color = i == selectedSegmentIndex && Event.current.shift ? creator.selectedSegmentCol : creator.segmentCol;
             Handles.DrawBezier(points[0], points[3], points[1], points[2], Handles.color, null, 2f);
         }
 
-        for(int i = 0; i < Path.NumOfPoints; i++)
+        for (int i = 0; i < Path.NumOfPoints; i++)
         {
 
             if (i % 3 == 0 || creator.displayControlPoints)

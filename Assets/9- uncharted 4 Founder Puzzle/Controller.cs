@@ -1,7 +1,4 @@
-﻿using JetBrains.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -13,13 +10,13 @@ namespace EXP.U4FOUNDERSPUZZLE
         [SerializeField] Puzzle puzzle;
         bool initialized = false;
 
-        
-       
-        public List<GraphicalMovingPoint>PointsToGetOut = new List<GraphicalMovingPoint>();
+
+
+        public List<GraphicalMovingPoint> PointsToGetOut = new List<GraphicalMovingPoint>();
 
         public List<GraphicalMovingPoint> pointsToGetIn = new List<GraphicalMovingPoint>();
 
-        
+
         void Update()
         {
             if (Input.GetMouseButtonDown(0))
@@ -33,11 +30,11 @@ namespace EXP.U4FOUNDERSPUZZLE
 
             if (initialized)
             {
-               puzzle.SetupGame();
+                puzzle.SetupGame();
                 PointsToGetOut.Clear();
-               
-               initialized = false;
-                
+
+                initialized = false;
+
             }
 
             if (Input.GetMouseButtonDown(1))
@@ -69,11 +66,11 @@ namespace EXP.U4FOUNDERSPUZZLE
             float start = pointpos;
 
             RemoveFromSpline();
-            
+
             EnterSpline(targetSplineIndex, initialPoint, splineLength, spline, d, start);
-            
+
             ShiftPoints();
-            
+
 
             puzzle.CheckIfWillHaveFullTurn(puzzle.SplinePoints);
 
@@ -89,7 +86,7 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
             PointsToGetOut.Clear();
         }
-        
+
         private void EnterSpline(int targetSplineIndex, Vector3 initialPoint, float splineLength, Spline spline, float d, float start)
         {
             List<GraphicalMovingPoint> pointsToMove = new List<GraphicalMovingPoint>();
@@ -100,7 +97,7 @@ namespace EXP.U4FOUNDERSPUZZLE
             for (int i = 0; i < pointsToMove.Count; i++)
             {
                 int correctIndex = i;
-                
+
                 Vector3 currentPointPosition = pointsToMove[correctIndex].obj.transform.position;
 
                 float dist = GetDistance(currentPointPosition, initialPoint);
@@ -112,7 +109,7 @@ namespace EXP.U4FOUNDERSPUZZLE
                 point.splineIndex = targetSplineIndex;
                 point.splineLength = splineLength;
 
-                float pos = (d) + (start * (i+1));
+                float pos = (d) + (start * (i + 1));
 
                 puzzle.TargetDistance[point.distanceIndex] = pos / spline.GetLength();
 
@@ -122,7 +119,7 @@ namespace EXP.U4FOUNDERSPUZZLE
         }
 
 
-        public GraphicalMovingPoint Find(List<GraphicalMovingPoint>list , float num)
+        public GraphicalMovingPoint Find(List<GraphicalMovingPoint> list, float num)
         {
 
             for (int i = 0; i < list.Count; i++)
@@ -139,19 +136,19 @@ namespace EXP.U4FOUNDERSPUZZLE
 
 
 
-            bool v = true;
+        bool v = true;
         private void ShiftPoints()
         {
-            for (int i =0; i < puzzle.targetDistance.Count; i++)
+            for (int i = 0; i < puzzle.targetDistance.Count; i++)
             {
 
-                if (puzzle.splinePoints[i].splineIndex!=0)
+                if (puzzle.splinePoints[i].splineIndex != 0)
                 {
-                    continue; 
+                    continue;
                 }
 
-                if(v)
-                puzzle.TargetDistance[i] = (puzzle.TargetDistance[i]+0.5f)%1;
+                if (v)
+                    puzzle.TargetDistance[i] = (puzzle.TargetDistance[i] + 0.5f) % 1;
                 else
                     puzzle.TargetDistance[i] = (puzzle.TargetDistance[i] + 0.6f) % 1;
             }
@@ -163,9 +160,9 @@ namespace EXP.U4FOUNDERSPUZZLE
         {
             Spline spline = puzzle.container.Splines[1];
             float totalDistance = 0;
-            for(int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 5; i++)
             {
-                totalDistance+=spline.GetCurveLength(i);
+                totalDistance += spline.GetCurveLength(i);
             }
             return totalDistance;
         }

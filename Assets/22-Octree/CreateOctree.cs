@@ -1,25 +1,36 @@
 using UnityEngine;
 
-public class CreateOctree : MonoBehaviour
+namespace Octree
 {
-    public GameObject[] worldObjects;
-    public float minNodeSize;
-    Octree octree;
-    void Start()
-    {
-        octree = new Octree(worldObjects, minNodeSize);
-        
-    }
+	public class CreateOctree : MonoBehaviour
+	{
+	    public GameObject[] worldObjects;
+	    public float minNodeSize;
+	    public Octree octree;
 
-    private void OnDrawGizmos()
-    {
-        if (Application.isPlaying)
-        {
+		public readonly Graph waypoints = new();
 
-            octree.rootNode.Draw();
-        }
-    }
+	    void Awake()
+	    {
+	        octree = new Octree(worldObjects, minNodeSize ,waypoints);
+	
+	    }
+	
+	   // private void OnDrawGizmos()
+	   // {
+	   //     if (Application.isPlaying)
+	   //     {
+	
+	   //         Gizmos.color = Color.green;
+	
+	   //         Gizmos.DrawWireCube(octree.bounds.center, octree.bounds.size);
+	   //         octree.rootNode.Draw();
 
-   
-
+				//waypoints.DrawGraph();
+	   //     }
+	   // }
+	
+	
+	
+	}
 }

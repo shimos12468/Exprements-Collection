@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Reflection;
-using Unity.VisualScripting;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -22,23 +17,23 @@ public class ProceduralAnimation : MonoBehaviour
     void Start()
     {
         splineLength = spline.CalculateLength(0);
-        for(int i = 0; i < length; i++)
+        for (int i = 0; i < length; i++)
         {
             Instantiate(prefab, transform);
             points.Add(transform.GetChild(i).gameObject);
         }
     }
-    public Vector3 ConstrainDistance(Vector3 point, Vector3 anchor,float distance)
+    public Vector3 ConstrainDistance(Vector3 point, Vector3 anchor, float distance)
     {
-        Vector3 dis = (point - anchor); 
+        Vector3 dis = (point - anchor);
         dis = dis.normalized;
         return (dis * distance) + anchor;
     }
-    
+
     void Update()
     {
         ApplyDistanceConstraintsOnPoints();
-        for(int i = 2; i < points.Count; i++)
+        for (int i = 2; i < points.Count; i++)
         {
             ApplyAngleConstraint(i);
         }
@@ -51,7 +46,7 @@ public class ProceduralAnimation : MonoBehaviour
         for (int i = 0; i < points.Count - 1; i++)
         {
             points[i + 1].transform.position = ConstrainDistance(points[i + 1].transform.position, points[i].transform.position, distance);
-            
+
             AlignForwardAndRightVectors(i);
             Vector3 dir = points[i].transform.position - points[i + 1].transform.position;
             points[i + 1].transform.rotation = Quaternion.LookRotation(dir, transform.up);
@@ -61,7 +56,7 @@ public class ProceduralAnimation : MonoBehaviour
     public float radius = 10;
     void ApplyAngleConstraint(int index)
     {
-         // Radius of the circle
+        // Radius of the circle
         float maxAngle = 2 * Mathf.Asin(distance / (2 * radius)) * Mathf.Rad2Deg; // Convert to degrees
 
         Vector3 currentDirection = points[index].transform.position - points[index - 1].transform.position;

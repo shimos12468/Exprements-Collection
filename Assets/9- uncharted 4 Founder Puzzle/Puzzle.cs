@@ -27,7 +27,7 @@ namespace EXP.U4FOUNDERSPUZZLE
                 splinePoints = value;
             }
         }
-    
+
         public List<float> targetDistance = new List<float>();
         public List<float> TargetDistance
         {
@@ -40,7 +40,7 @@ namespace EXP.U4FOUNDERSPUZZLE
                 targetDistance = value;
             }
         }
-        
+
         private List<Vector2> calculatedCirclePoints = new List<Vector2>();
 
 
@@ -63,12 +63,12 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
 
         }
-        
+
         public void SetupGame()
         {
             splinePoints.Clear();
             targetDistance.Clear();
-            points = null; 
+            points = null;
 
             CalculateCirclePoints(numPoints, radius);
             InitializePoints();
@@ -81,7 +81,7 @@ namespace EXP.U4FOUNDERSPUZZLE
             {
                 radius *= transform.localScale.x;
                 float angleStep = isCircle ? 2 * Mathf.PI / (numPoints) : Mathf.PI / (numPoints);
-   
+
                 for (int i = 0; i < numPoints; i++)
                 {
                     float angle = angleStep * i;
@@ -168,7 +168,7 @@ namespace EXP.U4FOUNDERSPUZZLE
         {
 
 
-         
+
 
             if (moving)
             {
@@ -182,8 +182,8 @@ namespace EXP.U4FOUNDERSPUZZLE
                     if (points[i].switching)
                     {
 
-                        if (Mathf.Abs(points[i].obj.transform.position.x - container.Splines[1].Knots.ToArray()[11].Position.x)<=0.1f &&
-                            Mathf.Abs(points[i].obj.transform.position.z - container.Splines[1].Knots.ToArray()[11].Position.z)<= 0.1f)
+                        if (Mathf.Abs(points[i].obj.transform.position.x - container.Splines[1].Knots.ToArray()[11].Position.x) <= 0.1f &&
+                            Mathf.Abs(points[i].obj.transform.position.z - container.Splines[1].Knots.ToArray()[11].Position.z) <= 0.1f)
                         {
 
                             print("Hello");
@@ -197,7 +197,7 @@ namespace EXP.U4FOUNDERSPUZZLE
                 Move();
             }
         }
-        
+
         private void Move()
         {
 
@@ -219,11 +219,11 @@ namespace EXP.U4FOUNDERSPUZZLE
             }
             CloseTurn();
         }
-      
+
         private bool CheckArrivingToDesiredPoint(int i)
         {
 
-            
+
             if (points[i].switching)
             {
                 //Vector3.Distance(points[i].obj.transform.position, container.Splines[0].Knots.ToArray()[1].Position) <= 0.4f
@@ -251,11 +251,11 @@ namespace EXP.U4FOUNDERSPUZZLE
 
                 }
 
-              
+
             }
 
-            
-            if (points[i].currentDistance >= targetDistance[points[i].distanceIndex] && points[i].turns<=0)
+
+            if (points[i].currentDistance >= targetDistance[points[i].distanceIndex] && points[i].turns <= 0)
             {
                 points.RemoveAt(i);
                 return true;
@@ -283,7 +283,7 @@ namespace EXP.U4FOUNDERSPUZZLE
         private void NormalizePoint(int i)
         {
 
-            if (points[i].turns>0)
+            if (points[i].turns > 0)
             {
                 if (points[i].currentDistance >= 1)
                 {
@@ -310,18 +310,18 @@ namespace EXP.U4FOUNDERSPUZZLE
                         //splinePoints[j].normalized += 0;
 
                     }
-                   
+
                 }
                 points = null;
                 moving = false;
             }
         }
-        
+
         public List<GraphicalMovingPoint> GetPointsList()
         {
             return points;
         }
-        
+
         public void SetupPointsList()
         {
             points = new List<GraphicalMovingPoint>(splinePoints);
@@ -348,19 +348,19 @@ namespace EXP.U4FOUNDERSPUZZLE
     public class GraphicalMovingPoint
     {
         public GameObject obj;
-        
+
         public float splineLength = 0;
-        
+
         public float currentDistance = 0;
-        
+
         public float startDistance = 0;
-        
+
         public int splineIndex = 0;
-        
-        public int distanceIndex =0;
-        
+
+        public int distanceIndex = 0;
+
         public int turns = 0;
-        
+
         public bool switching = false;
     }
 

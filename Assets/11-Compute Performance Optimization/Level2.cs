@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Level2 : MonoBehaviour
@@ -7,7 +5,7 @@ public class Level2 : MonoBehaviour
     public GameObject cubePrefab;
 
     private float[] cubeOffsets;
-    private Transform[] spawnedCubes; 
+    private Transform[] spawnedCubes;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,10 +19,10 @@ public class Level2 : MonoBehaviour
         {
 
             cubeOffsets[i] = p.y;
-            spawnedCubes[i]=Instantiate(cubePrefab,p, Quaternion.identity, transform).transform;
+            spawnedCubes[i] = Instantiate(cubePrefab, p, Quaternion.identity, transform).transform;
 
         });
-        
+
         SceneTools.Instance.SetCountText(count);
         SceneTools.Instance.SetNameText("Managed Cubes");
 
@@ -38,7 +36,7 @@ public class Level2 : MonoBehaviour
         for (int i = 0; i < spawnedCubes.Length; i++)
         {
 
-            var cube = spawnedCubes[i]; 
+            var cube = spawnedCubes[i];
             var (pos, rot) = cube.position.CalculatePos(cubeOffsets[i], time);
             cube.SetPositionAndRotation(pos, rot);
 

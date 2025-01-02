@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -8,7 +6,7 @@ public class Level1 : MonoBehaviour
 
     public GameObject cubePrefab;
 
-        // Start is called before the first frame update
+    // Start is called before the first frame update
     void Start()
     {
         SceneTools.LoopPositions((i, p) =>
@@ -16,7 +14,7 @@ public class Level1 : MonoBehaviour
 
             Instantiate(cubePrefab, new Vector3(p.x, p.y * SceneTools.DEPTH_OFFSET, p.z), Quaternion.identity, transform)
             .AddComponent<Level1Cube>()
-            .Init(p.y );
+            .Init(p.y);
 
         });
 
@@ -26,7 +24,7 @@ public class Level1 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
 

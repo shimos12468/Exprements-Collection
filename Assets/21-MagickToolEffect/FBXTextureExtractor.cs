@@ -1,6 +1,5 @@
-using UnityEngine;
 using UnityEditor;
-using System.IO;
+using UnityEngine;
 
 public class FBXTextureExtractor
 {

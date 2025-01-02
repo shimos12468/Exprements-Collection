@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,8 +11,8 @@ public class MarchingSquares : MonoBehaviour
     float[,,] points;
 
 
-    List<Vector3>vertices = new List<Vector3>();
-    List<int>triangles= new List<int>();
+    List<Vector3> vertices = new List<Vector3>();
+    List<int> triangles = new List<int>();
     public MeshFilter meshFilter;
 
 
@@ -21,7 +20,7 @@ public class MarchingSquares : MonoBehaviour
     void Start()
     {
 
-        meshFilter = GetComponent<MeshFilter>();    
+        meshFilter = GetComponent<MeshFilter>();
         StartCoroutine(UpdateAll());
     }
 
@@ -38,9 +37,9 @@ public class MarchingSquares : MonoBehaviour
 
     private void SetMesh()
     {
-        Mesh mesh= new Mesh();
+        Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();   
+        mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
         meshFilter.mesh = mesh;
     }
@@ -49,16 +48,16 @@ public class MarchingSquares : MonoBehaviour
     {
         print("hello");
         vertices.Clear();
-        triangles.Clear();  
+        triangles.Clear();
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height ; y++)
+            for (int y = 0; y < height; y++)
             {
-                for (int z = 0; z < depth ; z++)
+                for (int z = 0; z < depth; z++)
                 {
-                    float [] cubeCorners = new float[8];
+                    float[] cubeCorners = new float[8];
 
-                    for(int i = 0; i < 8; i++)
+                    for (int i = 0; i < 8; i++)
                     {
                         Vector3Int corner = new Vector3Int(x, y, z) + MarchingTable.Corners[i];
                         cubeCorners[i] = points[corner.x, corner.y, corner.z];
@@ -78,23 +77,23 @@ public class MarchingSquares : MonoBehaviour
 
         int edgeIndex = 0;
 
-        for(int t = 0; t < 5; t++)
+        for (int t = 0; t < 5; t++)
         {
-            for(int v = 0; v < 3; v++)
+            for (int v = 0; v < 3; v++)
             {
-                int triangleTableValue=MarchingTable.Triangles[confiurationIndex ,edgeIndex];
-                
-                if(triangleTableValue == -1)
+                int triangleTableValue = MarchingTable.Triangles[confiurationIndex, edgeIndex];
+
+                if (triangleTableValue == -1)
                 {
                     return;
                 }
 
-                 Vector3 edgeStart= (position*res)+MarchingTable.Edges[triangleTableValue, 0];
-                 Vector3 edgeEnd = (position * res) + MarchingTable.Edges[triangleTableValue, 0];
-                 Vector3 vertex = (edgeStart+edgeEnd) /2;
-                 vertices.Add(vertex);
-                 triangles.Add(vertices.Count-1);
-                 edgeIndex++;
+                Vector3 edgeStart = (position * res) + MarchingTable.Edges[triangleTableValue, 0];
+                Vector3 edgeEnd = (position * res) + MarchingTable.Edges[triangleTableValue, 0];
+                Vector3 vertex = (edgeStart + edgeEnd) / 2;
+                vertices.Add(vertex);
+                triangles.Add(vertices.Count - 1);
+                edgeIndex++;
             }
         }
 
@@ -103,11 +102,11 @@ public class MarchingSquares : MonoBehaviour
     int GetConfigurationIndex(float[] cubeCorners)
     {
         int confiurationIndex = 0;
-        for(int i = 0; i < cubeCorners.Length; i++)
+        for (int i = 0; i < cubeCorners.Length; i++)
         {
             if (cubeCorners[i] > threshold)
             {
-                confiurationIndex |= 1<<i;
+                confiurationIndex |= 1 << i;
             }
         }
         return confiurationIndex;
@@ -117,24 +116,24 @@ public class MarchingSquares : MonoBehaviour
 
         points = new float[width + 1, height + 1, depth + 1];
 
-        for (int x = 0; x < width+1; x++)
+        for (int x = 0; x < width + 1; x++)
         {
-            for (int y = 0; y < height+1; y++)
+            for (int y = 0; y < height + 1; y++)
             {
                 for (int z = 0; z < depth + 1; z++)
                 {
-                    float currentHeight = height*Mathf.PerlinNoise(x*noiseResolution, z* noiseResolution);
+                    float currentHeight = height * Mathf.PerlinNoise(x * noiseResolution, z * noiseResolution);
 
                     float newHeight;
 
-                    if (y <= currentHeight - (res/2))
+                    if (y <= currentHeight - (res / 2))
                     {
-                        newHeight = 0f *res;
+                        newHeight = 0f * res;
                     }
 
                     else if (y >= currentHeight + (res / 2))
                     {
-                        newHeight = 1f*res;
+                        newHeight = 1f * res;
                     }
                     else if (y > currentHeight)
                     {
@@ -144,7 +143,7 @@ public class MarchingSquares : MonoBehaviour
                     {
                         newHeight = currentHeight - y;
                     }
-                    
+
                     points[x, y, z] = newHeight;
 
                 }
@@ -159,5 +158,5 @@ public class MarchingSquares : MonoBehaviour
 
     }
 
- 
+
 }

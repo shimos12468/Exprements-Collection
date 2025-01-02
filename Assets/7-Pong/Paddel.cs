@@ -1,23 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class Paddel : MonoBehaviour
 {
     static readonly int emissionColorId = Shader.PropertyToID("_EmissionColor"), timeOfLastHitId = Shader.PropertyToID("_TimeOfLastHit");
-    
+
     [SerializeField, Min(0f)]
-    float maxExtents = 4f,minExtents =4f,speed = 10f,maxTargetingBias =0.75f;
-    
+    float maxExtents = 4f, minExtents = 4f, speed = 10f, maxTargetingBias = 0.75f;
+
     [SerializeField]
     TextMeshPro scoreText;
-    
+
     int score;
     float targetingBias;
     float extents = 4f;
 
-    Material paddleMaterial , goalMaterial;
+    Material paddleMaterial, goalMaterial;
 
     [SerializeField]
     MeshRenderer goalRenderer;
@@ -28,7 +26,7 @@ public class Paddel : MonoBehaviour
     public bool isAI = false;
 
     public void SetTargetingBias() => targetingBias = Random.Range(-maxTargetingBias, maxTargetingBias);
-    
+
     private void Awake()
     {
         goalMaterial = goalRenderer.material;
@@ -40,16 +38,16 @@ public class Paddel : MonoBehaviour
     {
         extents = newExtents;
         Vector3 s = transform.localScale;
-        s.x = 2*extents;
+        s.x = 2 * extents;
         transform.localScale = s;
     }
 
-    public void Move(float target,float arenaExtents)
+    public void Move(float target, float arenaExtents)
     {
         Vector3 position = transform.localPosition;
         position.x = isAI ? AdjustByAI(position.x, target) : AdjustByPlayer(position.x);
         float limit = arenaExtents - extents;
-        position.x =  Mathf.Clamp(position.x, -limit,limit);
+        position.x = Mathf.Clamp(position.x, -limit, limit);
         transform.localPosition = position;
     }
     float AdjustByAI(float x, float target)
@@ -76,10 +74,10 @@ public class Paddel : MonoBehaviour
         return x;
     }
 
-    public bool HitBall(float ballX , float ballExtents ,out float hitFactor)
+    public bool HitBall(float ballX, float ballExtents, out float hitFactor)
     {
         SetTargetingBias();
-            hitFactor = (ballX - transform.position.x) / (ballExtents + extents);
+        hitFactor = (ballX - transform.position.x) / (ballExtents + extents);
 
         bool success = -1f <= hitFactor && hitFactor <= 1f;
         if (success)
@@ -88,7 +86,7 @@ public class Paddel : MonoBehaviour
         }
         return success;
     }
-    void SetScore(int newScore, float pointsToWin =1000f)
+    void SetScore(int newScore, float pointsToWin = 1000f)
     {
         score = newScore;
         scoreText.SetText("{0}", newScore);
@@ -104,7 +102,7 @@ public class Paddel : MonoBehaviour
     public bool ScorePoint(int pointsToWin)
     {
         goalMaterial.SetFloat(timeOfLastHitId, Time.time);
-        SetScore(score + 1,pointsToWin);
+        SetScore(score + 1, pointsToWin);
         return score >= pointsToWin;
     }
 }

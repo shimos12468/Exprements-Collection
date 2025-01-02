@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LivelyCamera : MonoBehaviour
@@ -11,20 +8,20 @@ public class LivelyCamera : MonoBehaviour
         dampingStrength = 10f,
         jostleStrength = 40f,
         pushtrength = 1f,
-        maxDeltaTime =1f/60f;
+        maxDeltaTime = 1f / 60f;
 
-    Vector3 velocity,anchorPosition;
+    Vector3 velocity, anchorPosition;
 
     public void JostileY() => velocity.y += jostleStrength;
 
     public void PushXZ(Vector2 impulse)
     {
-        velocity.x += pushtrength*impulse.x;
-        velocity.z += jostleStrength*impulse.y;
+        velocity.x += pushtrength * impulse.x;
+        velocity.z += jostleStrength * impulse.y;
     }
     void Start()
     {
-        anchorPosition = transform.localPosition;    
+        anchorPosition = transform.localPosition;
     }
     private void LateUpdate()
     {
@@ -35,7 +32,7 @@ public class LivelyCamera : MonoBehaviour
             dt -= maxDeltaTime;
         }
         TimeStep(dt);
-        
+
     }
 
     private void TimeStep(float dt)

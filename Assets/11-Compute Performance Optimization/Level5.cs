@@ -21,7 +21,7 @@ public class Level5 : MonoBehaviour
     private ComputeBuffer _meshPropertiesBuffer;
     int kernal;
     int count;
-   
+
 
     private int cacheMultiplier = 1;
 
@@ -30,8 +30,8 @@ public class Level5 : MonoBehaviour
     void Start()
     {
         kernal = compute.FindKernel("CSMain");
-        count = SceneTools.GetCount* countMultiplier;
-        ApplyMultiplierUpdate(countMultiplier,true);
+        count = SceneTools.GetCount * countMultiplier;
+        ApplyMultiplierUpdate(countMultiplier, true);
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
 
 
@@ -47,7 +47,7 @@ public class Level5 : MonoBehaviour
     {
         var dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-        _pusher.Translate(dir*(_pusherSpeed*Time.deltaTime));
+        _pusher.Translate(dir * (_pusherSpeed * Time.deltaTime));
         compute.SetVector("pusher_position", _pusher.position);
         compute.Dispatch(kernal, Mathf.CeilToInt(count / 64), 1, 1);
 
@@ -84,7 +84,7 @@ public class Level5 : MonoBehaviour
         }
 
 
-        _meshPropertiesBuffer = new ComputeBuffer(count,80);
+        _meshPropertiesBuffer = new ComputeBuffer(count, 80);
         _meshPropertiesBuffer.SetData(data);
 
         compute.SetBuffer(kernal, "data", _meshPropertiesBuffer);

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Levl3 : MonoBehaviour
@@ -9,7 +7,7 @@ public class Levl3 : MonoBehaviour
     public Material material;
 
     private float[] cubeOffsets;
-    private Matrix4x4[] matrices; 
+    private Matrix4x4[] matrices;
 
     private Vector3[] positions;
 
@@ -24,7 +22,7 @@ public class Levl3 : MonoBehaviour
         var count = SceneTools.GetCount;
 
         cubeOffsets = new float[count];
-        positions= new Vector3[count];
+        positions = new Vector3[count];
         matrices = new Matrix4x4[count];
 
         SceneTools.LoopPositions((i, p) =>
@@ -50,7 +48,7 @@ public class Levl3 : MonoBehaviour
         for (int i = 0; i < positions.Length; i++)
         {
 
-            
+
             var (pos, rot) = positions[i].CalculatePos(cubeOffsets[i], time);
 
             matrices[i].SetTRS(pos, rot, SceneTools.CubeScale);

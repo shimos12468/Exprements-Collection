@@ -1,8 +1,8 @@
-using UnityEngine;
-using UnityEditor;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 public class FBXAssetExtractor : EditorWindow
 {
@@ -190,7 +190,7 @@ public class FBXAssetExtractor : EditorWindow
 
                 // Save original texture
                 SaveTextureToPNG(texture, texturePath);
-                
+
                 // Optimize texture for the target platform
                 OptimizeTextureForPlatform(texturePath, targetPlatform);
             }

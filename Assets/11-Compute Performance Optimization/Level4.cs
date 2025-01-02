@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,7 +5,7 @@ using UnityEngine.UI;
 
 public class Level4 : MonoBehaviour
 {
-    private readonly uint[] args={0,0,0,0,0};
+    private readonly uint[] args = { 0, 0, 0, 0, 0 };
 
 
 
@@ -21,10 +19,10 @@ public class Level4 : MonoBehaviour
     private ComputeBuffer positionBuffer1, positionBuffer2;
     private int cacheMultiplier = 1;
 
-    public int countMultiplier =1;
+    public int countMultiplier = 1;
     private void Start()
     {
-        count = SceneTools.GetCount*countMultiplier;
+        count = SceneTools.GetCount * countMultiplier;
 
         argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
         UpdateBuffers();
@@ -38,7 +36,7 @@ public class Level4 : MonoBehaviour
 
     private void Update()
     {
-     
+
         Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, Vector3.one * 1000), argsBuffer);
 
         if (Input.GetMouseButtonUp(0) && countMultiplier != cacheMultiplier)
@@ -73,7 +71,7 @@ public class Level4 : MonoBehaviour
         var batchIndex = 0;
         var batch = 0;
 
-        for(var i = 0; i < count; ++i)
+        for (var i = 0; i < count; ++i)
         {
 
             var dir = Random.insideUnitSphere.normalized;
@@ -122,11 +120,11 @@ public class Level4 : MonoBehaviour
 
     public Slider slider;
     public TMP_Text sliderValueText;
-    public void ApplyMultiplierUpdate(int val,bool applySliderChange = false)
+    public void ApplyMultiplierUpdate(int val, bool applySliderChange = false)
     {
         sliderValueText.text = $"Multiplier: {val.ToString()}";
         cacheMultiplier = val;
-        if(applySliderChange)
+        if (applySliderChange)
         {
             slider.value = val;
         }

@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
 
     [SerializeField, Min(0f)]
-    float maxStartXSpeed=2,maxSpeed = 20, constantYSpeed = 8,extents =0.5f;
+    float maxStartXSpeed = 2, maxSpeed = 20, constantYSpeed = 8, extents = 0.5f;
 
     [SerializeField]
-    ParticleSystem bounceParticleSystem ,startParticleSystem ,trailParticleSystem;
+    ParticleSystem bounceParticleSystem, startParticleSystem, trailParticleSystem;
 
     [SerializeField]
     int bounceParticleEmission = 20,
@@ -35,13 +33,13 @@ public class Ball : MonoBehaviour
     }
     public void UpdateVisualization()
     {
-         trailParticleSystem.transform.position= transform.localPosition = new Vector3(position.x, 0, position.y);
+        trailParticleSystem.transform.position = transform.localPosition = new Vector3(position.x, 0, position.y);
     }
 
-    public void SetXPositionAndSpeed(float start ,float speedFactor,float deltaTime)
+    public void SetXPositionAndSpeed(float start, float speedFactor, float deltaTime)
     {
-        velocity.x = maxSpeed*speedFactor;
-        position.x = start+velocity.x*deltaTime;
+        velocity.x = maxSpeed * speedFactor;
+        position.x = start + velocity.x * deltaTime;
     }
 
 
@@ -76,7 +74,7 @@ public class Ball : MonoBehaviour
     public void BounceX(float boundary)
     {
         float durationAfterBounce = (position.x - boundary) / velocity.x;
-        position.x = 2* boundary-position.x;
+        position.x = 2 * boundary - position.x;
         velocity.x = -velocity.x;
         EmitBounceParticles(
             boundary,
@@ -90,7 +88,7 @@ public class Ball : MonoBehaviour
         position.y = 2 * boundary - position.y;
         velocity.y = -velocity.y;
         EmitBounceParticles(
-           position.x - velocity.x * durationAfterBounce    ,
+           position.x - velocity.x * durationAfterBounce,
             boundary,
            boundary < 0f ? 0f : 180f
        );
