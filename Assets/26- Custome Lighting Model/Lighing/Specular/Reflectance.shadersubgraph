@@ -314,7 +314,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Power",
     "m_StageCapability": 3,
-    "m_Value": 3.0,
+    "m_Value": 10.0,
     "m_DefaultValue": 1.0,
     "m_Labels": []
 }
@@ -587,8 +587,8 @@
     "m_ObjectId": "78cf7754fe3042f8be9a187a22d7ab8d",
     "m_Title": "Reflectance",
     "m_Position": {
-        "x": -713.9999389648438,
-        "y": 118.0
+        "x": -713.9998779296875,
+        "y": 117.99999237060547
     }
 }
 

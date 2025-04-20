@@ -1759,8 +1759,8 @@
     "m_ObjectId": "f05f2cf581dc4a2aad226581fe39cbb1",
     "m_Title": "Blinn Specular",
     "m_Position": {
-        "x": -891.0000610351563,
-        "y": 146.0
+        "x": -891.0,
+        "y": 145.99996948242188
     }
 }
 

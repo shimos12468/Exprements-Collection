@@ -53,6 +53,9 @@
         },
         {
             "m_Id": "c1fd6c44ab8c46d0b768fcd8d0f90bda"
+        },
+        {
+            "m_Id": "deb9562efbcb42e0bcafc781d2a01f15"
         }
     ],
     "m_GroupDatas": [],
@@ -197,6 +200,20 @@
                 },
                 "m_SlotId": 0
             }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "deb9562efbcb42e0bcafc781d2a01f15"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "846c822f90fa41fd90dbfcd3033d3271"
+                },
+                "m_SlotId": 10
+            }
         }
     ],
     "m_VertexContext": {
@@ -266,6 +283,30 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PositionMaterialSlot",
+    "m_ObjectId": "1937c662afb044dbbd2ceb23f71f7fe7",
+    "m_Id": 3,
+    "m_DisplayName": "World Space Position",
+    "m_SlotType": 0,
+    "m_Hidden": true,
+    "m_ShaderOutputName": "WorldSpacePosition",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_Labels": [],
+    "m_Space": 2
 }
 
 {
@@ -640,10 +681,10 @@
     },
     "m_Slots": [
         {
-            "m_Id": "ce25014d246746d8a608af6f94266828"
+            "m_Id": "4feb3e920bbc4948b09daba5328b932d"
         },
         {
-            "m_Id": "4feb3e920bbc4948b09daba5328b932d"
+            "m_Id": "1937c662afb044dbbd2ceb23f71f7fe7"
         }
     ],
     "synonyms": [
@@ -671,10 +712,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -572.0,
-            "y": 0.0,
-            "width": 208.0,
-            "height": 245.0
+            "x": -573.9999389648438,
+            "y": 0.00001049041748046875,
+            "width": 273.0000305175781,
+            "height": 445.9999694824219
         }
     },
     "m_Slots": [
@@ -698,6 +739,9 @@
         },
         {
             "m_Id": "0d0f5730207a4deab7aa117070eb78cd"
+        },
+        {
+            "m_Id": "c2e886d3a98841ae9285be11d213c0f9"
         },
         {
             "m_Id": "a81d8ac31b8a433ba61ad55e7fa8268b"
@@ -724,7 +768,7 @@
     "m_FunctionName": "AddAddetionalLights",
     "m_FunctionSource": "",
     "m_FunctionSourceUsePragmas": true,
-    "m_FunctionBody": "Diffuse = MainDiffuse;\r\nSpecular = MainSpecular;\r\nColor = MainColor * (MainDiffuse + MainSpecular);\r\n\r\n#ifndef SHADERGRAPH_PREVIEW\r\n\r\n    uint pixelLightCount = GetAdditionalLightsCount();\r\n\t\r\n\tLIGHT_LOOP_BEGIN(pixelLightCount)\r\n\t\t//get light color and direction\r\n\t\tlightIndex = GetPerObjectLightIndex(lightIndex);\r\n\t\tLight light = GetAdditionalPerObjectLight(lightIndex, WorldPosition);\r\n\t\t\r\n\t\t//calculate shadows\r\n\t\tlight.shadowAttenuation = AdditionalLightRealtimeShadow(lightIndex, WorldPosition, light.direction);\r\n\t\tfloat atten = light.distanceAttenuation * light.shadowAttenuation;\r\n\t\t\r\n\t\t//calculate diffuse and specular\r\n\t\tfloat NdotL = saturate(dot(WorldNormal, light.direction));\r\n\t\tfloat thisDiffuse = atten * NdotL;\r\n\t\tfloat3 thisSpecular = LightingSpecular(thisDiffuse, light.direction, WorldNormal, WorldView, 1, Smoothness);\r\n\t\t\r\n\t\t//accumulate light\r\n\t\tDiffuse += thisDiffuse;\r\n\t\tSpecular += thisSpecular;\r\n\t\tColor += light.color * (thisDiffuse + thisSpecular);\r\n\tLIGHT_LOOP_END\r\n\r\n\tfloat total = Diffuse + dot(Specular, float3(0.333, 0.333, 0.333));\r\n\tColor = total <= 0 ? MainColor : Color / total;\r\n#endif\r\n"
+    "m_FunctionBody": "Diffuse = MainDiffuse;\r\nSpecular = MainSpecular;\r\nColor = MainColor * (MainDiffuse + MainSpecular);\r\n\r\n#ifndef SHADERGRAPH_PREVIEW\r\n\r\n    \tuint pixelLightCount = GetAdditionalLightsCount();\r\n\t#if USE_FORWARD_PLUS\r\n\t\tInputData inputData =(InputData)0;\r\n\t\tinputData.normalizedScreenSpaceUV =ScreenPosition;\r\n\t\tinputData.positionWS =WorldPosition;\r\n\t#endif\t\r\n\r\n\r\n\tLIGHT_LOOP_BEGIN(pixelLightCount)\r\n\t\t//get light color and direction\r\n\t\t#if !USE_FORWARD_PLUS\r\n\t\t\tlightIndex = GetPerObjectLightIndex(lightIndex);\r\n\t\t#endif\r\n\t\tLight light = GetAdditionalPerObjectLight(lightIndex, WorldPosition);\r\n\t\t\r\n\t\t//calculate shadows\r\n\t\tlight.shadowAttenuation = AdditionalLightRealtimeShadow(lightIndex, WorldPosition, light.direction);\r\n\t\tfloat atten = light.distanceAttenuation * light.shadowAttenuation;\r\n\t\t\r\n\t\t//calculate diffuse and specular\r\n\t\tfloat NdotL = saturate(dot(WorldNormal, light.direction));\r\n\t\tfloat thisDiffuse = atten * NdotL;\r\n\t\tfloat3 thisSpecular = LightingSpecular(thisDiffuse, light.direction, WorldNormal, WorldView, 1, Smoothness);\r\n\t\t\r\n\t\t//accumulate light\r\n\t\tDiffuse += thisDiffuse;\r\n\t\tSpecular += thisSpecular;\r\n\t\t\r\n\t\t#if defined(_LIGHT_COOKIES)\r\n\t\t\tfloat3 cookieColor =SampleAdditionalLightCookie(lightIndex,WorldPosition);\r\n\t\t\tlight.color*=cookieColor;\r\n\t\t#endif\r\n\r\n\t\tColor += light.color * (thisDiffuse + thisSpecular);\r\n\tLIGHT_LOOP_END\r\n\r\n\tfloat total = Diffuse + dot(Specular, float3(0.333, 0.333, 0.333));\r\n\tColor = total <= 0 ? MainColor : Color / total;\r\n#endif\r\n"
 }
 
 {
@@ -986,6 +1030,27 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
+    "m_ObjectId": "c2e886d3a98841ae9285be11d213c0f9",
+    "m_Id": 10,
+    "m_DisplayName": "ScreenPosition",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "ScreenPosition",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
     "m_ObjectId": "c397f4eea0214d29a95fb52f0c82c071",
     "m_Id": 0,
@@ -1043,30 +1108,6 @@
         "z": 0.0
     },
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.PositionMaterialSlot",
-    "m_ObjectId": "ce25014d246746d8a608af6f94266828",
-    "m_Id": 3,
-    "m_DisplayName": "World Space Position",
-    "m_SlotType": 0,
-    "m_Hidden": true,
-    "m_ShaderOutputName": "WorldSpacePosition",
-    "m_StageCapability": 3,
-    "m_Value": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_DefaultValue": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_Labels": [],
-    "m_Space": 2
 }
 
 {
@@ -1130,6 +1171,40 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.ScreenPositionNode",
+    "m_ObjectId": "deb9562efbcb42e0bcafc781d2a01f15",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Screen Position",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -984.9998779296875,
+            "y": 488.9999694824219,
+            "width": 208.0,
+            "height": 312.9999694824219
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "edeba7f0b501454483c92ecbe27e5c7e"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_ScreenSpaceType": 0
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "e1a24c55060e43e9baf59bb45634862b",
     "m_Id": 4,
@@ -1162,6 +1237,31 @@
         "x": 0.0,
         "y": 0.0,
         "z": 0.0
+    },
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
+    "m_ObjectId": "edeba7f0b501454483c92ecbe27e5c7e",
+    "m_Id": 0,
+    "m_DisplayName": "Out",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
     },
     "m_Labels": []
 }
