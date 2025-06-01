@@ -7,6 +7,10 @@ Shader "Unlit/VolumetricFog"
        _StepSize("Step size",Range(0.1,20)) =20
        _DensityMultiplier("Density Multiplier",Range(0,10)) =1
        _NoiseOffset("Noise Offset",float) =1
+
+       _FogNoise("Fog Noise ",3D) = "white"{}
+       _NoiseTilling("Noise tilling",float) =1
+       _DensityThreshold("Density threshold",Range(0,1)) =0.1
     }
     SubShader
     {
@@ -28,10 +32,16 @@ Shader "Unlit/VolumetricFog"
             float _DensityMultiplier;
             float4 _Color;
             float _NoiseOffset;
-            float GetDensity(){
+            TEXTURE3D(_FogNoise);
+            float _DensityThreshold;
+            float _NoiseTilling;
+
+            float GetDensity(float3 worldPos){
             
-            
-                return _DensityMultiplier;
+                float4 noise = _FogNoise.SampleLevel(sampler_TrilinearRepeat ,worldPos*0.01*_NoiseTilling,0);
+                float density1 = dot(noise,noise);
+                density1 = saturate(density1-_DensityThreshold)*_DensityMultiplier;
+                return density1;
             }
 
             half4 frag (Varyings i) : SV_Target
@@ -46,17 +56,17 @@ Shader "Unlit/VolumetricFog"
                float viewLength = length(viewDir);
                float rayDir = normalize(viewDir);
                
+               
+               float2 pixelCoords = i.texcoord * _BlitTexture_TexelSize.zw;
 
                float distLimit = min(viewLength,_MaxDistance);
-
-               float distTravelled =0;
+               float distTravelled = InterleavedGradientNoise(pixelCoords ,(int)(_Time.y/max(HALF_EPS,unity_DeltaTime.x)))*_NoiseOffset;
                float transmittance =1;
                
-               while(distTravelled<=distLimit)
+               while(distTravelled<distLimit)
                {
-
-
-                   float density = GetDensity();
+                   float3 rayPos =entryPoint+(rayDir*distTravelled); 
+                   float density = GetDensity(rayPos);
 
                    if(density>0)
                    {
