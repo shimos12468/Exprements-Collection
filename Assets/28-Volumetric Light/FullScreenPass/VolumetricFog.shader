@@ -11,6 +11,9 @@ Shader "Unlit/VolumetricFog"
        _FogNoise("Fog Noise ",3D) = "white"{}
        _NoiseTilling("Noise tilling",float) =1
        _DensityThreshold("Density threshold",Range(0,1)) =0.1
+
+       [HDR] _LightContribution("Light contribution",Color)=(1,1,1,1)
+        _LightScattering("Light Scattering",Range(0.2,1)) =0.1
     }
     SubShader
     {
@@ -21,62 +24,69 @@ Shader "Unlit/VolumetricFog"
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment frag
-            
+            #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
+
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
 
-            float _MaxDistance;
-
-            float _StepSize;
-            float _DensityMultiplier;
             float4 _Color;
+            float _MaxDistance;
+            float _DensityMultiplier;
+            float _StepSize;
             float _NoiseOffset;
             TEXTURE3D(_FogNoise);
             float _DensityThreshold;
             float _NoiseTilling;
-
-            float GetDensity(float3 worldPos){
+            float4 _LightContribution;
+            float _LightScattering;
+            float get_density(float3 worldPos){
             
-                float4 noise = _FogNoise.SampleLevel(sampler_TrilinearRepeat ,worldPos*0.01*_NoiseTilling,0);
-                float density1 = dot(noise,noise);
-                density1 = saturate(density1-_DensityThreshold)*_DensityMultiplier;
-                return density1;
+                float4 noise = _FogNoise.SampleLevel(sampler_TrilinearRepeat, worldPos * 0.01 * _NoiseTilling, 0);
+                float density = dot(noise, noise);
+                density = saturate(density - _DensityThreshold) * _DensityMultiplier;
+                return density;
             }
-
+            float henyey_greenstein(float angle, float scattering)
+            {
+                return (1.0 - angle * angle) / (4.0 * PI * pow(1.0 + scattering * scattering - (2.0 * scattering) * angle, 1.5f));
+            }
             half4 frag (Varyings i) : SV_Target
             {
                 float4 col = SAMPLE_TEXTURE2D(_BlitTexture,sampler_LinearClamp,i.texcoord);
+                float depth = SampleSceneDepth(i.texcoord);
+                float3 worldPos = ComputeWorldSpacePosition(i.texcoord,depth,UNITY_MATRIX_I_VP);
+               
+                float3 entryPoint = _WorldSpaceCameraPos;
+                float3 viewDir = worldPos - _WorldSpaceCameraPos;
+                float viewLength = length(viewDir);
+                float3 rayDir = normalize(viewDir);
+               
+               
+                float2 pixelCoords = i.texcoord * _BlitTexture_TexelSize.zw;
 
-               float depth = SampleSceneDepth(i.texcoord);
-               float3 worldPos = ComputeWorldSpacePosition(i.texcoord,depth,UNITY_MATRIX_I_VP);
+                float distLimit = min(viewLength,_MaxDistance);
+                float distTravelled = InterleavedGradientNoise(pixelCoords ,(int)(_Time.y/max(HALF_EPS,unity_DeltaTime.x)))*_NoiseOffset;
+                float transmittance =1;
                
-               float3 entryPoint = _WorldSpaceCameraPos;
-               float3 viewDir = worldPos - _WorldSpaceCameraPos;
-               float viewLength = length(viewDir);
-               float rayDir = normalize(viewDir);
-               
-               
-               float2 pixelCoords = i.texcoord * _BlitTexture_TexelSize.zw;
+                float4 fogCol = _Color;
 
-               float distLimit = min(viewLength,_MaxDistance);
-               float distTravelled = InterleavedGradientNoise(pixelCoords ,(int)(_Time.y/max(HALF_EPS,unity_DeltaTime.x)))*_NoiseOffset;
-               float transmittance =1;
-               
-               while(distTravelled<distLimit)
-               {
-                   float3 rayPos =entryPoint+(rayDir*distTravelled); 
-                   float density = GetDensity(rayPos);
-
-                   if(density>0)
-                   {
-                       transmittance*=exp(-density*_StepSize);
+                 while(distTravelled < distLimit)
+                {
+                    float3 rayPos = entryPoint + rayDir * distTravelled;
+                    float density = get_density(rayPos);
+                    if (density > 0)
+                    {
+                       Light mainLight = GetMainLight(TransformWorldToShadowCoord(rayPos));
+                       fogCol.rgb += mainLight.color.rgb * _LightContribution.rgb *henyey_greenstein(dot(rayDir,mainLight.direction),_LightScattering)* density *mainLight.shadowAttenuation* _StepSize;
+                       transmittance *= exp(-density * _StepSize);
                     }
-                   distTravelled+=_StepSize;
-                            
-               }
+                    distTravelled += _StepSize;
+                }
+                
 
-               return lerp(col,_Color ,1.0-saturate(transmittance));
+               return lerp(col,fogCol ,1.0-saturate(transmittance));
             }
             ENDHLSL
         }
